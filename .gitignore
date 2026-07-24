@@ -1,0 +1,14 @@
+# VS Code
+.vscode/
+
+# Windows
+Thumbs.db
+
+# macOS
+.DS_Store
+
+# Log files
+*.log
+
+# Environment files
+.env

@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Pinky Sky Dash</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+  :root {
+    --cr-sky: #cfeaff;
+    --cr-pink: #ffd6ef;
+    --cr-white-glow: #ffffff;
+    --cr-pink-glow: #fff0fa;
+    --cr-blue: #7ec8ff;
+    --cr-hotpink: #ff8fd0;
+    --cr-hotpink-light: #ffc3e8;
+    --cr-gold: #ffe08f;
+    --cr-lavender: #c8b6ff;
+    --cr-cotton-pink: #ffb6e6;
+    --cr-gray-blue: #b9c4d0;
+    --cr-gray-blue-pale: #dfe4ea;
+    --cr-gray-light: #e3e7ec;
+    --cr-gray-text: #8b8f9a;
+    --cr-plum: #3a3450;
+    --cr-periwinkle: #4a3f66;
+    --cr-lavender-muted: #8a7fa0;
+    --cr-violet-gray: #7a6f95;
+    --cr-hint: #9a8fb0;
+    --cr-card-fill: rgba(255,255,255,0.6);
+    --cr-input-border: #ecd9f0;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+ body {
+    min-height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    /*
+      Background image around the game.
+      Put your image inside:
+      assets/images/sky-bg.jpg
+    */
+    background:
+        linear-gradient(
+            rgba(255,240,250,0.65),
+            rgba(207,234,255,0.75)
+        ),
+        url("assets/images/sky-bg.jpg");
+
+    background-size: cover;
+    background-position: center;
+
+    font-family: 'Press Start 2P', monospace;
+    color: var(--cr-plum);
+
+    overflow: hidden;
+    }
+
+  #game-wrap {
+
+    position: relative;
+
+    padding: 18px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    background: var(--cr-card-fill);
+
+    border: 4px solid var(--cr-white-glow);
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 0 0 4px var(--cr-hotpink-light),
+        0 10px 30px rgba(122, 111, 149, 0.35);
+    }
+
+  h1 {
+    text-align: center;
+    font-size: 14px;
+    color: var(--cr-periwinkle);
+    margin: 0 0 12px;
+    letter-spacing: 1px;
+    text-shadow: 2px 2px 0 var(--cr-hotpink-light);
+  }
+
+  canvas {
+    display: block;
+    image-rendering: pixelated;
+    border: 3px solid var(--cr-lavender);
+    border-radius: 10px;
+    background: linear-gradient(180deg, var(--cr-sky), var(--cr-pink-glow));
+  }
+
+  #hud {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    font-size: 10px;
+    color: var(--cr-violet-gray);
+  }
+
+  #score { color: var(--cr-hotpink); font-size: 12px; }
+  #best { color: var(--cr-lavender-muted); }
+
+  #overlay {
+    position: absolute;
+    inset: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    background: rgba(255, 240, 250, 0.85);
+    border-radius: 12px;
+    text-align: center;
+    padding: 20px;
+  }
+
+  #overlay.hidden { display: none; }
+
+  #overlay p { font-size: 10px; color: var(--cr-plum); line-height: 1.8; margin: 4px 0; }
+  #overlay h2 { font-size: 16px; color: var(--cr-hotpink); margin: 0; text-shadow: 2px 2px 0 var(--cr-gold); }
+
+  button {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    padding: 10px 16px;
+    background: var(--cr-hotpink);
+    color: white;
+    border: 3px solid var(--cr-white-glow);
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 0 var(--cr-lavender-muted);
+  }
+  button:active { transform: translateY(3px); box-shadow: none; }
+  button:hover { background: var(--cr-cotton-pink); }
+
+  #tip { font-size: 8px; color: var(--cr-hint); margin-top: 10px; text-align: center; }
+
+  canvas {
+    display: block;
+    margin: 0 auto;
+    image-rendering: pixelated;
+    border: 3px solid var(--cr-lavender);
+    border-radius: 10px;
+    }
+
+    /* Floating decorations around the game */
+
+.decoration {
+    position: fixed;
+    pointer-events: none;
+    animation: float 5s ease-in-out infinite;
+}
+
+
+.cloud {
+    font-size: 70px;
+    opacity: 0.7;
+}
+
+
+.cloud1 {
+    top: 15%;
+    left: 8%;
+}
+
+
+.cloud2 {
+    top: 30%;
+    right: 8%;
+    animation-delay: 2s;
+}
+
+
+.star {
+    font-size: 35px;
+    color: #ffe08f;
+}
+
+
+.star1 {
+    top: 12%;
+    right: 25%;
+}
+
+
+.star2 {
+    bottom: 20%;
+    left: 18%;
+}
+
+
+.flower {
+    font-size: 60px;
+    bottom: 10%;
+    right: 15%;
+}
+
+
+
+@keyframes float {
+
+    0%,100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+.home-btn {
+
+    position: fixed;
+
+    bottom: 30px;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+
+    padding: 10px 18px;
+
+    background: var(--cr-lavender);
+
+    color: white;
+
+    text-decoration: none;
+
+    border-radius: 12px;
+
+    font-size: 10px;
+
+    border: 3px solid white;
+
+    box-shadow: 0 4px 0 var(--cr-lavender-muted);
+
+    z-index: 10;
+}
+
+.home-btn:hover {
+
+    background: var(--cr-hotpink);
+
+}
+</style>
+</head>
+<body>
+    <div class="decoration cloud cloud1">☁️</div>
+    <div class="decoration cloud cloud2">☁️</div>
+
+    <div class="decoration star star1">✦</div>
+    <div class="decoration star star2">✧</div>
+
+    <div class="decoration flower">🌸</div>
+
+<a href="index.php" class="home-btn">
+    🏡 HOME
+</a>
+
+
+<div id="game-wrap">
+
+  <h1>✧ PINKY SKY DASH ✧</h1>
+
+  <canvas id="game" width="360" height="480"></canvas>
+
+  <div id="hud">
+  <span id="score">SCORE: 0</span>
+  <span id="best">BEST: 0</span>
+</div>
+
+
+<div id="overlay">
+
+  <h2>PINKY SKY DASH</h2>
+
+  <p>
+    TAP / CLICK / SPACE<br>
+    TO FLY UPWARD
+  </p>
+
+  <p>
+    DODGE THE CLOUD GATES!
+  </p>
+
+  <button id="startBtn">
+      START
+  </button>
+
+</div>
+
+
+</div>
+
+<script>
+// ---------------------------------------------------------
+// SPRITE CONFIG — drop image URLs here later to reskin the game.
+// Leave as null to keep the current simple placeholder shapes.
+// ---------------------------------------------------------
+const SPRITES = {
+  player: null,      // e.g. "https://your-cdn.com/pinky-star.png"
+  obstacleTop: null, // e.g. cloud/gate image
+  obstacleBottom: null,
+  background: null,  // full canvas background image
+};
+
+const palette = {
+  sky: '#cfeaff',
+  pink: '#ffd6ef',
+  hotpink: '#ff8fd0',
+  hotpinkLight: '#ffc3e8',
+  gold: '#ffe08f',
+  lavender: '#c8b6ff',
+  cottonPink: '#ffb6e6',
+  plum: '#3a3450',
+  white: '#ffffff'
+};
+
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
+
+const scoreEl = document.getElementById('score');
+const bestEl = document.getElementById('best');
+const overlay = document.getElementById('overlay');
+const startBtn = document.getElementById('startBtn');
+
+let best = Number(localStorage.getItem('pinkySkyBest') || 0);
+bestEl.textContent = 'BEST: ' + best;
+
+const GRAVITY = 0.45;
+const FLAP = -7.5;
+const GAP = 140;
+const PIPE_W = 52;
+const PIPE_SPEED = 2.6;
+const SPAWN_EVERY = 95;
+
+let images = {};
+function loadImg(key, url) {
+  if (!url) return;
+  const img = new Image();
+  img.src = url;
+  images[key] = img;
+}
+loadImg('player', SPRITES.player);
+loadImg('obstacleTop', SPRITES.obstacleTop);
+loadImg('obstacleBottom', SPRITES.obstacleBottom);
+loadImg('background', SPRITES.background);
+
+let bird, pipes, frame, score, running, gameOver;
+
+function resetGame() {
+  bird = { x: 70, y: H / 2, vy: 0, r: 14, rot: 0 };
+  pipes = [];
+  frame = 0;
+  score = 0;
+  running = false;
+  gameOver = false;
+  scoreEl.textContent = 'SCORE: 0';
+}
+
+function spawnPipe() {
+  const margin = 60;
+  const gapY = margin + Math.random() * (H - margin * 2 - GAP);
+  pipes.push({ x: W, gapY, passed: false });
+}
+
+function flap() {
+  if (gameOver) return;
+  if (!running) { running = true; overlay.classList.add('hidden'); }
+  bird.vy = FLAP;
+}
+
+function update() {
+  frame++;
+  bird.vy += GRAVITY;
+  bird.y += bird.vy;
+  bird.rot = Math.max(-0.5, Math.min(1.2, bird.vy / 10));
+
+  if (frame % SPAWN_EVERY === 0) spawnPipe();
+
+  for (const p of pipes) {
+    p.x -= PIPE_SPEED;
+    if (!p.passed && p.x + PIPE_W < bird.x) {
+      p.passed = true;
+      score++;
+      scoreEl.textContent = 'SCORE: ' + score;
+    }
+  }
+  pipes = pipes.filter(p => p.x + PIPE_W > -10);
+
+  if (bird.y + bird.r > H || bird.y - bird.r < 0) endGame();
+
+  for (const p of pipes) {
+    const inX = bird.x + bird.r > p.x && bird.x - bird.r < p.x + PIPE_W;
+    if (inX) {
+      const inGap = bird.y - bird.r > p.gapY && bird.y + bird.r < p.gapY + GAP;
+      if (!inGap) endGame();
+    }
+  }
+}
+
+function endGame() {
+  if (gameOver) return;
+  gameOver = true;
+  running = false;
+  if (score > best) {
+    best = score;
+    localStorage.setItem('pinkySkyBest', best);
+    bestEl.textContent = 'BEST: ' + best;
+  }
+  overlay.classList.remove('hidden');
+  overlay.innerHTML = `
+    <h2>GAME OVER</h2>
+    <p>SCORE: ${score}<br>BEST: ${best}</p>
+    <button id="startBtn2">RETRY</button>
+  `;
+  document.getElementById('startBtn2').addEventListener('click', () => {
+    resetGame();
+    overlay.classList.add('hidden');
+    running = true;
+  });
+}
+
+function drawBackground() {
+  if (images.background && images.background.complete) {
+    ctx.drawImage(images.background, 0, 0, W, H);
+    return;
+  }
+  const g = ctx.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, palette.sky);
+  g.addColorStop(1, palette.pink);
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, W, H);
+
+  ctx.fillStyle = 'rgba(255,255,255,0.55)';
+  for (let i = 0; i < 4; i++) {
+    const cx = (i * 130 + (frame * 0.3) % 520) % (W + 100) - 50;
+    const cy = 60 + i * 90;
+    drawCloud(cx, cy);
+  }
+}
+
+function drawCloud(x, y) {
+  ctx.beginPath();
+  ctx.ellipse(x, y, 22, 12, 0, 0, Math.PI * 2);
+  ctx.ellipse(x + 16, y + 4, 16, 10, 0, 0, Math.PI * 2);
+  ctx.ellipse(x - 16, y + 4, 16, 10, 0, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+function drawPipes() {
+  for (const p of pipes) {
+    if (images.obstacleTop && images.obstacleTop.complete) {
+      ctx.drawImage(images.obstacleTop, p.x, 0, PIPE_W, p.gapY);
+    } else {
+      ctx.fillStyle = palette.lavender;
+      ctx.fillRect(p.x, 0, PIPE_W, p.gapY);
+      ctx.fillStyle = palette.hotpinkLight;
+      ctx.fillRect(p.x - 3, p.gapY - 16, PIPE_W + 6, 16);
+    }
+    if (images.obstacleBottom && images.obstacleBottom.complete) {
+      ctx.drawImage(images.obstacleBottom, p.x, p.gapY + GAP, PIPE_W, H - (p.gapY + GAP));
+    } else {
+      ctx.fillStyle = palette.lavender;
+      ctx.fillRect(p.x, p.gapY + GAP, PIPE_W, H - (p.gapY + GAP));
+      ctx.fillStyle = palette.hotpinkLight;
+      ctx.fillRect(p.x - 3, p.gapY + GAP, PIPE_W + 6, 16);
+    }
+  }
+}
+
+function drawBird() {
+  ctx.save();
+  ctx.translate(bird.x, bird.y);
+  ctx.rotate(bird.rot * 0.3);
+
+  if (images.player && images.player.complete) {
+    ctx.drawImage(images.player, -bird.r, -bird.r, bird.r * 2, bird.r * 2);
+  } else {
+    ctx.fillStyle = palette.hotpink;
+    ctx.beginPath();
+    ctx.arc(0, 0, bird.r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = palette.white;
+    ctx.beginPath();
+    ctx.arc(5, -4, 3.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = palette.plum;
+    ctx.beginPath();
+    ctx.arc(6, -4, 1.6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = palette.gold;
+    ctx.beginPath();
+    ctx.moveTo(bird.r - 2, 0);
+    ctx.lineTo(bird.r + 8, -3);
+    ctx.lineTo(bird.r + 8, 3);
+    ctx.closePath();
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
+function loop() {
+  drawBackground();
+  drawPipes();
+  drawBird();
+
+  if (running) update();
+
+  requestAnimationFrame(loop);
+}
+
+startBtn.addEventListener('click', () => {
+  resetGame();
+  overlay.classList.add('hidden');
+  running = true;
+});
+
+document.addEventListener('keydown', e => {
+  if (e.code === 'Space') { e.preventDefault(); flap(); }
+});
+canvas.addEventListener('mousedown', flap);
+canvas.addEventListener('touchstart', e => { e.preventDefault(); flap(); }, { passive: false });
+
+resetGame();
+loop();
+</script>
+</body>
+</html>
