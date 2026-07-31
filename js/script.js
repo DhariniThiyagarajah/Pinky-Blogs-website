@@ -146,3 +146,28 @@ function initCharacterCounter() {
     textarea.addEventListener('input', updateCount);
     updateCount();
 }
+// Resize blog thumbnails in the browser before uploading. The server also
+// validates and resizes when PHP's image extension is available.
+document.querySelectorAll('input[type="file"][data-resize-thumbnail]').forEach(input => {
+    input.addEventListener('change', async () => {
+        const file = input.files?.[0];
+        if (!file || !file.type.startsWith('image/')) return;
+        const bitmap = await createImageBitmap(file);
+        const canvas = document.createElement('canvas');
+        canvas.width = 960;
+        canvas.height = 600;
+        const context = canvas.getContext('2d');
+        context.fillStyle = '#fff0fa';
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        const scale = Math.max(canvas.width / bitmap.width, canvas.height / bitmap.height);
+        const width = bitmap.width * scale;
+        const height = bitmap.height * scale;
+        context.drawImage(bitmap, (canvas.width - width) / 2, (canvas.height - height) / 2, width, height);
+        bitmap.close();
+        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', .88));
+        if (!blob) return;
+        const transfer = new DataTransfer();
+        transfer.items.add(new File([blob], 'thumbnail.jpg', { type: 'image/jpeg' }));
+        input.files = transfer.files;
+    });
+});

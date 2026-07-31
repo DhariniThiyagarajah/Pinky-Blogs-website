@@ -20,12 +20,23 @@ $isHome = $currentPage === 'index.php';
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=VT323&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-<link rel="stylesheet" href="css/pinky-theme.css">
-<link rel="stylesheet" href="css/pinkybtheme.css">
+    <link rel="stylesheet" href="css/style.css?v=<?= (int) filemtime(__DIR__ . '/../css/style.css') ?>">
+<link rel="stylesheet" href="css/pinky-theme.css?v=<?= (int) filemtime(__DIR__ . '/../css/pinky-theme.css') ?>">
 
-<?php if (basename($_SERVER['PHP_SELF']) == 'profile.php'): ?>
-<link rel="stylesheet" href="css/profile.css">
+<?php if (in_array(basename($_SERVER['PHP_SELF']), ['profile.php', 'edit_profile.php'], true)): ?>
+<link rel="stylesheet" href="css/profile.css?v=<?= (int) filemtime(__DIR__ . '/../css/profile.css') ?>">
+<?php endif; ?>
+<?php if (basename($_SERVER['PHP_SELF']) === 'blogs.php'): ?>
+<link rel="stylesheet" href="css/blogs.css?v=<?= (int) filemtime(__DIR__ . '/../css/blogs.css') ?>">
+<?php endif; ?>
+<?php if (basename($_SERVER['PHP_SELF']) === 'view.php'): ?>
+<link rel="stylesheet" href="css/view.css?v=<?= (int) filemtime(__DIR__ . '/../css/view.css') ?>">
+<?php endif; ?>
+<?php if (basename($_SERVER['PHP_SELF']) === 'create.php'): ?>
+<link rel="stylesheet" href="css/create.css?v=<?= (int) filemtime(__DIR__ . '/../css/create.css') ?>">
+<?php endif; ?>
+<?php if (basename($_SERVER['PHP_SELF']) === 'aboutme.php'): ?>
+<link rel="stylesheet" href="css/aboutme.css?v=<?= (int) filemtime(__DIR__ . '/../css/aboutme.css') ?>">
 <?php endif; ?>
 </head>
 <body class="<?= $isHome ? 'page-home' : 'page-inner' ?>">
@@ -48,6 +59,7 @@ $isHome = $currentPage === 'index.php';
 
 </div>
 
+<?php if ($currentPage !== 'blogs.php'): ?>
     <header class="pinky-header">
 
         <div class="pinky-logo">
@@ -59,48 +71,38 @@ $isHome = $currentPage === 'index.php';
         </p>
 
     </header>
+<?php endif; ?>
 
 <nav class="pinky-nav">
 
-    <a href="index.php">
-        <span class="nav-icon">
-            <img src="images/icons/home.png" alt="Home">
-        </span>
+    <a href="index.php" class="<?= $currentPage === 'index.php' ? 'active' : '' ?>">
         <small>Home</small>
     </a>
 
 
-    <a href="blogs.php">
-        <span class="nav-icon">
-            <img src="images/icons/blog.png" alt="Blogs">
-        </span>
+    <a href="blogs.php" class="<?= in_array($currentPage, ['blogs.php', 'view.php'], true) ? 'active' : '' ?>">
         <small>Blogs</small>
     </a>
 
 
-    <a href="game.html">
-        <span class="nav-icon">
-            <img src="images/icons/game.png" alt="Game">
-        </span>
+    <a href="game.html" class="<?= $currentPage === 'game.html' ? 'active' : '' ?>">
         <small>Game</small>
     </a>
 
 
     <?php if (isLoggedIn()): ?>
 
+    <a href="profile.php" class="<?= in_array($currentPage, ['profile.php', 'edit_profile.php', 'create.php', 'edit.php'], true) ? 'active' : '' ?>">
+        <small>Profile</small>
+    </a>
+
     <a href="logout.php">
-        <span class="nav-icon">
-            <img src="images/icons/logout.png" alt="Logout">
-        </span>
         <small>Logout</small>
     </a>
 
     <?php else: ?>
 
     <a href="login.php">
-        <span class="nav-icon">
-            <img src="images/icons/login.png" alt="Login">
-        </span>
         <small>Login</small>
     </a>
 

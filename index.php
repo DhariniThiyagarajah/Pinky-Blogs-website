@@ -44,6 +44,7 @@
 
     body {
     font-family: 'Quicksand', sans-serif;
+    font-size: 18px;
     color: var(--cr-plum);
     position: relative;
     display: flex;
@@ -166,7 +167,7 @@
     }
     .site-title h1{
         font-family:'Baloo 2', cursive;
-        font-size:2.6rem;
+        font-size:clamp(2.8rem, 3.2vw, 3.6rem);
         font-weight:900;
         letter-spacing:1px;
 
@@ -203,19 +204,16 @@
     position: relative;
     z-index: 2;
     height: auto;
-    max-width: 1200px;
-    width: 100%;
-    margin: 0 auto 0.5rem;
+    /* Fill the screen naturally instead of scaling a fixed-width panel. */
+    width: min(94vw, 1600px);
+    margin: 0 auto 1rem;
     flex: 0 0 auto;
-
-    transform: scale(1.05);
-    transform-origin: center;
 
     background: var(--cr-card-fill);
     backdrop-filter: blur(2px);
     border: 2px solid var(--cr-hotpink);
     border-radius: 24px;
-    padding: 1.25rem 1.5rem;
+    padding: 1.5rem 2rem;
     display: flex;
     gap: 1.5rem;
     justify-content: center;
@@ -225,8 +223,8 @@
 
     /* left column: logo mark, featured spot, idol showcase */
     .room-left {
-        flex: 1 1 280px;
-        max-width: 300px;
+        flex: 0 1 360px;
+        max-width: 380px;
         min-height: 0;
         display: flex;
         flex-direction: column;
@@ -244,14 +242,14 @@
     .logo-screen-inner {
         background: var(--cr-white-glow);
         border-radius: 8px;
-        min-height: 54px;
+        min-height: 68px;
         display: flex;
         align-items: center;
         justify-content: center;
     }
     .logo-screen-inner img {
-        width: 40px;
-        height: 40px;
+        width: 52px;
+        height: 52px;
         border-radius: 50%;
         object-fit: cover;
         border: 2px solid var(--cr-cotton-pink);
@@ -260,7 +258,7 @@
     /* featured picture frame */
     .featured-frame {
     width: 100%;
-    height: 220px;
+    height: 260px;
     border: 5px solid #f6c6d8;
     border-radius: 30px;
     overflow: hidden;
@@ -302,8 +300,8 @@
 
     /* idol showcase — reserved spot for an anime idol image */
     .idol-slot {
-        height:180px;
-        flex:0 0 180px;
+        height:210px;
+        flex:0 0 210px;
         width: 100%;
         background: var(--cr-card-fill);
         border: 2px dashed var(--cr-cotton-pink);
@@ -328,7 +326,7 @@
 
     /* right column: navigation frames */
     .room-right {
-        flex: 1 1 500px;
+        flex: 1 1 700px;
         min-height: 0;
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -381,7 +379,7 @@
         flex: 0 0 auto;
         font-family: 'Baloo 2', sans-serif;
         font-weight: 700;
-        font-size: 0.95rem;
+        font-size: 1.2rem;
         margin-top: 0.4rem;
         color: var(--cr-periwinkle);
     }
@@ -602,14 +600,23 @@
     @media (max-width: 900px) {
         html, body { height: auto; }
         body { overflow: auto; }
-        .room { flex-direction: column; height: auto; }
+        .room {
+            width: calc(100% - 2rem);
+            flex-direction: column;
+            height: auto;
+        }
         .room-left { max-width: 100%; }
     }
 
     @media (max-width: 720px) {
-        .room { padding: 1.25rem; border-radius: 18px; }
+        .room {
+            width: calc(100% - 1rem);
+            padding: 1rem;
+            gap: 1rem;
+            border-radius: 18px;
+        }
         .room-right { grid-template-columns: 1fr; grid-template-rows: none; }
-        .site-title h1 { font-size: 1.2rem; }
+        .site-title h1 { font-size: 2rem; }
     }
 
 </style>
@@ -735,7 +742,7 @@
                 <div class="nav-frame-label">profile</div>
             </a>
 
-            <a class="nav-frame" href="about.html">
+            <a class="nav-frame" href="aboutme.php">
                 <div class="nav-frame-image">
                     <img src="assests/images/about-thumb.jpg" alt="about me" onerror="this.parentElement.textContent='add about thumbnail'">
                 </div>

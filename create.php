@@ -9,6 +9,7 @@
 $pageTitle = 'Create Blog';
 require_once __DIR__ . '/includes/db.php';
 require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/includes/blog_image.php';
 
 requireLogin();
 
@@ -22,17 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = trim($_POST['title'] ?? '');
     $content = trim($_POST['content'] ?? '');
 
-    if (isset($_FILES['thumbnail']) && $_FILES['thumbnail']['error'] === 0) {
-
-        $uploadDir = __DIR__ . '/assests/blog-thumbnails/';
-        $fileName = basename($_FILES['thumbnail']['name']);
-
-        $targetPath = $uploadDir . $fileName;
-
-        if (move_uploaded_file($_FILES['thumbnail']['tmp_name'], $targetPath)) {
-            $thumbnail = $fileName;
-        }
-    }
+    if (isset($_FILES['thumbnail'])) $thumbnail = saveBlogThumbnail($_FILES['thumbnail'], $errors) ?? '';
 
     if ($title === '') {
         $errors[] = 'Title is required.';
@@ -65,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
-<div class="inner-layout">
+<div class="inner-layout create-blog-page">
     <div class="inner-main">
         <div class="kawaii-box form-container-wide" style="margin: 0 auto;">
             <div class="box-cap">&#9998; new entry</div>
@@ -99,10 +90,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             type="file"
                             id="thumbnail"
                             name="thumbnail"
+                            data-resize-thumbnail
                             accept="image/png,image/jpeg,image/jpg,image/webp">
 
                         <small>
-                            Upload a cover image for your blog (optional).
+                            Upload a cover image (optional). It will be center-cropped to 960 × 600.
                         </small>
                     </div>
 
@@ -130,10 +122,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </form>
         </div>
     </div>
-    <?php
-    $totalPosts = 0;
-    require_once __DIR__ . '/includes/sidebar.php';
-    ?>
 </div>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

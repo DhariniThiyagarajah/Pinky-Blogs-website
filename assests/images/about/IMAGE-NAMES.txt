@@ -1,0 +1,22 @@
+Add your About Me images to this folder with these exact names:
+
+about-banner.jpeg      - Wide page banner, recommended 1600 x 500
+about-avatar.jpg       - Profile portrait, recommended square 600 x 600
+about-side.gif          - Mascot or decorative animation, around 300 x 300
+
+Gallery images, recommended 800 x 600:
+about-gallery-1.gif
+about-gallery-2.gif
+about-gallery-3.gif
+about-gallery-4.gif
+about-gallery-5.gif
+about-gallery-6.gif
+
+Small buttons or blinkies:
+about-button-1.gif
+about-button-2.gif
+about-button-3.gif
+about-button-4.gif
+
+Missing images display a labeled placeholder. Images appear automatically once
+the correctly named files are placed in this folder.

@@ -1,0 +1,6 @@
+Add the blog-page banner image to this folder with this exact name:
+
+blog-banner.png
+
+Recommended size: 1600 x 500 pixels or another wide landscape ratio.
+The image uses cover sizing, so its outer edges may be cropped on smaller screens.

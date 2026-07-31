@@ -9,6 +9,7 @@
 $pageTitle = 'Edit Blog';
 require_once __DIR__ . '/includes/db.php';
 require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/includes/blog_image.php';
 
 $blogId = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 
@@ -26,6 +27,7 @@ $content = $blog['content'];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = trim($_POST['title'] ?? '');
     $content = trim($_POST['content'] ?? '');
+    $thumbnail = $blog['thumbnail'] ?? '';
 
     if ($title === '') {
         $errors[] = 'Title is required.';
@@ -37,12 +39,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = 'Content is required.';
     }
 
+    if (empty($errors) && isset($_FILES['thumbnail'])) {
+        $newThumbnail = saveBlogThumbnail($_FILES['thumbnail'], $errors);
+        if ($newThumbnail !== null) $thumbnail = $newThumbnail;
+    }
+
     if (empty($errors)) {
         $stmt = $conn->prepare(
-            'UPDATE blogPost SET title = ?, content = ? WHERE id = ? AND user_id = ?'
+            'UPDATE blogPost SET title = ?, content = ?, thumbnail = ? WHERE id = ? AND user_id = ?'
         );
         $userId = (int) $_SESSION['user_id'];
-        $stmt->bind_param('ssii', $title, $content, $blogId, $userId);
+        $stmt->bind_param('sssii', $title, $content, $thumbnail, $blogId, $userId);
 
         if ($stmt->execute() && $stmt->affected_rows >= 0) {
             $stmt->close();
@@ -76,11 +83,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             <?php endif; ?>
 
-            <form method="POST" action="edit.php?id=<?= $blogId ?>" data-validate novalidate>
+            <form method="POST" action="edit.php?id=<?= $blogId ?>" enctype="multipart/form-data" data-validate novalidate>
                 <div class="form-group">
                     <label for="title">Title</label>
                     <input type="text" id="title" name="title" value="<?= e($title) ?>" maxlength="200" data-required>
                     <span class="field-error">This field is required.</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="thumbnail">Replace Blog Thumbnail</label>
+                    <input type="file" id="thumbnail" name="thumbnail" accept="image/png,image/jpeg,image/webp" data-resize-thumbnail>
+                    <small>Optional. The image will be center-cropped to 960 × 600.</small>
                 </div>
 
                 <div class="form-group">

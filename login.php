@@ -5,11 +5,13 @@ include "includes/db.php";
 
 if(isset($_POST['login'])){
 
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+    $email = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
 
-    $sql = "SELECT * FROM user WHERE username='$username'";
-    $result = mysqli_query($conn,$sql);
+    $stmt = $conn->prepare('SELECT id, username, password FROM user WHERE email = ? LIMIT 1');
+    $stmt->bind_param('s', $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
     if(mysqli_num_rows($result) > 0){
 
@@ -28,8 +30,10 @@ if(isset($_POST['login'])){
         }
 
     }else{
-        echo "User not found";
+        echo "Email not found";
     }
+
+    $stmt->close();
 }
 ?>
 <!DOCTYPE html>
@@ -233,11 +237,32 @@ if(isset($_POST['login'])){
         .login-btn:hover { filter: brightness(1.06); transform: translateY(-2px); }
         .login-btn:active { transform: translateY(0); }
 
-        .forgot-pass {
-            display: block; text-align: center; margin-top: 1.75rem;
-            color: #a598c0; text-decoration: none; font-size: 0.85rem; font-weight: 500;
+        .password-field { position: relative; }
+        .password-field input { width: 100%; padding-right: 3.2rem; }
+        .password-toggle {
+            position: absolute; top: 50%; right: 0.85rem; transform: translateY(-50%);
+            width: 34px; height: 34px; display: grid; place-items: center;
+            padding: 0; color: #9a8fb0; background: transparent; border: 0;
+            border-radius: 50%; cursor: pointer;
         }
-        .forgot-pass:hover { color: #ff8fd0; }
+        .password-toggle:hover { color: #ff8fd0; background: #fff0fa; }
+        .password-toggle svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; }
+
+        .login-options { display: flex; justify-content: flex-end; margin: -0.6rem 0 0.9rem; }
+        .forgot-pass { color: #ff8fd0; text-decoration: none; font-size: 0.8rem; font-weight: 600; }
+        .forgot-pass:hover { color: #4a3f66; text-decoration: underline; }
+
+        .register-prompt {
+            margin-top: 1.4rem; padding: 0.85rem 1rem; text-align: center;
+            color: #4a3f66;
+            background: rgba(255,255,255,.92);
+            border: 2px solid var(--theme-color); border-radius: 999px;
+            box-shadow: 0 7px 18px -10px rgba(var(--theme-glow-rgb), .8), inset 0 1px 0 rgba(255,255,255,.85);
+            font-size: 0.82rem; font-weight: 600;
+            transition: background .4s ease, border-color .4s ease, box-shadow .4s ease;
+        }
+        .register-prompt a { color: var(--theme-color); font-weight: 800; text-decoration: none; transition: color .4s ease; }
+        .register-prompt a:hover { color: #4a3f66; text-decoration: underline; }
 
         @media (max-width: 768px) {
             .container { flex-direction: column; height: auto; }
@@ -323,16 +348,22 @@ if(isset($_POST['login'])){
                 <p class="sub">log in to your doll account</p>
                 <form action="login.php" method="post">
                     <div class="input-group">
-                        <label>username</label>
-                        <input type="text" name="username" placeholder="e.g. sparklekitten" required>
+                        <label>email</label>
+                        <input type="email" name="email" placeholder="e.g. name@example.com" autocomplete="email" required>
                     </div>
                     <div class="input-group">
                         <label>password</label>
-                        <input type="password" name="password" placeholder="••••••••" required>
+                        <div class="password-field">
+                            <input type="password" id="loginPassword" name="password" placeholder="••••••••" required>
+                            <button type="button" class="password-toggle" id="passwordToggle" aria-label="Show password" aria-pressed="false">
+                                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.8"/></svg>
+                            </button>
+                        </div>
                     </div>
+                    <div class="login-options"><a href="#" class="forgot-pass">Forgot password?</a></div>
                     <button type="submit" name="login" class="login-btn">log in ✧</button>
                 </form>
-                <a href="#" class="forgot-pass">forgot password? ˚ʚ♡ɞ˚</a>
+                <p class="register-prompt">Don't have an account? <a href="register.php">Register here</a></p>
             </div>
         </div>
     </div>
@@ -351,6 +382,15 @@ if(isset($_POST['login'])){
         const faceAwake = document.querySelector('.face-awake');
         const faceSleep = document.querySelector('.face-sleep');
         const burstGroup = document.getElementById('burstGroup');
+        const passwordInput = document.getElementById('loginPassword');
+        const passwordToggle = document.getElementById('passwordToggle');
+
+        passwordToggle.addEventListener('click', () => {
+            const showing = passwordInput.type === 'text';
+            passwordInput.type = showing ? 'password' : 'text';
+            passwordToggle.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
+            passwordToggle.setAttribute('aria-pressed', showing ? 'false' : 'true');
+        });
 
         function toggleLamp() {
             pullBow.style.transform = 'translateY(15px)';

@@ -13,7 +13,24 @@ CREATE TABLE IF NOT EXISTS user (
     username VARCHAR(50) NOT NULL UNIQUE,
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
-    role VARCHAR(20) NOT NULL DEFAULT 'user'
+    role VARCHAR(20) NOT NULL DEFAULT 'user',
+    profile_image VARCHAR(255) DEFAULT NULL,
+    cover_image VARCHAR(255) DEFAULT NULL,
+    description TEXT DEFAULT NULL,
+    discord VARCHAR(255) DEFAULT NULL,
+    youtube VARCHAR(255) DEFAULT NULL,
+    x_link VARCHAR(255) DEFAULT NULL,
+    spotify VARCHAR(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Community chat messages
+CREATE TABLE IF NOT EXISTS chatMessage (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    message VARCHAR(300) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_chat_created (created_at),
+    CONSTRAINT fk_chat_user FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Blog posts table: stores user-created blog entries
@@ -22,6 +39,7 @@ CREATE TABLE IF NOT EXISTS blogPost (
     user_id INT NOT NULL,
     title VARCHAR(200) NOT NULL,
     content TEXT NOT NULL,
+    thumbnail VARCHAR(255) DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_blog_user
@@ -31,6 +49,18 @@ CREATE TABLE IF NOT EXISTS blogPost (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE INDEX idx_blog_user_id ON blogPost(user_id);
+
+-- Blog comments: signed-in users can discuss every blog post
+CREATE TABLE IF NOT EXISTS blogComment (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    blog_id INT NOT NULL,
+    user_id INT NOT NULL,
+    comment VARCHAR(500) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_comment_blog_created (blog_id, created_at),
+    CONSTRAINT fk_comment_blog FOREIGN KEY (blog_id) REFERENCES blogPost(id) ON DELETE CASCADE,
+    CONSTRAINT fk_comment_user FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
 -- Sample data (demo password for all users: password)

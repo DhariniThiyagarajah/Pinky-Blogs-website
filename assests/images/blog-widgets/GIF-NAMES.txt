@@ -1,0 +1,13 @@
+Add your GIF files to this folder using these exact names:
+
+contact.gif       - Contact/email widget
+chat.gif          - Chat widget
+warning.gif       - Warning widget
+home.gif          - Home widget
+music-player.gif  - Music player widget
+
+Recommended sizes:
+- Regular widget GIFs: around 280x120 pixels
+
+The widgets will still work when a GIF is missing. The image appears automatically
+after a correctly named file is placed here.

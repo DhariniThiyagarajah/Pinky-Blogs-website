@@ -1,495 +1,243 @@
 <?php
-
-$pageTitle = "Pinky Blogs";
-
+$pageTitle = 'Pinky Blogs';
 require_once __DIR__ . '/includes/db.php';
 require_once __DIR__ . '/includes/header.php';
 
-
 $stmt = $conn->prepare(
-    "SELECT 
-        b.id,
-        b.title,
-        b.content,
-        b.created_at,
-        b.thumbnail,
-        u.username
-    FROM blogPost b
-    JOIN user u ON b.user_id = u.id
-    ORDER BY b.created_at DESC"
+    'SELECT b.id, b.title, b.content, b.created_at, b.thumbnail, u.username
+     FROM blogPost b JOIN user u ON b.user_id = u.id
+     ORDER BY b.created_at DESC'
 );
-
 $stmt->execute();
-
 $blogs = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-
 $stmt->close();
+
+$recentAuthors = [];
+foreach ($blogs as $blog) {
+    if (!in_array($blog['username'], $recentAuthors, true)) $recentAuthors[] = $blog['username'];
+}
+
+$widgetGif = static function (string $filename): ?string {
+    $relativePath = 'assests/images/blog-widgets/' . $filename;
+    return file_exists(__DIR__ . '/' . $relativePath) ? $relativePath : null;
+};
+if (empty($_SESSION['chat_csrf'])) {
+    $_SESSION['chat_csrf'] = bin2hex(random_bytes(32));
+}
 
 ?>
 
-
-<style>
-
-/* Pinky Blog Page */
-
-body{
-
-    background-color:#ffd6ef;
-
-    background-image:
-    radial-gradient(circle at 12% 8%, rgba(207,234,255,.75),transparent 40%),
-    radial-gradient(circle at 88% 12%, rgba(200,182,255,.55),transparent 38%),
-    radial-gradient(circle,rgba(255,255,255,.8) 1.5px,transparent 1.5px),
-    linear-gradient(
-        180deg,
-        #ffe3f5,
-        #ffd0ea
-    );
-
-    background-size:auto,auto,34px 34px,auto;
-
-    font-family:'Quicksand',sans-serif;
-
-}
-
-
-
-/* floating container */
-
-.blog-page{
-
-    max-width:1100px;
-
-    margin:40px auto;
-
-    padding:25px;
-
-    background:rgba(255,255,255,.55);
-
-    backdrop-filter:blur(5px);
-
-    border:3px solid #ff8fd0;
-
-    border-radius:28px;
-
-    box-shadow:
-    0 15px 35px rgba(58,52,80,.15);
-
-}
-
-
-
-/* title */
-
-
-.blog-heading{
-
-    text-align:center;
-
-    margin-bottom:35px;
-
-}
-
-
-.blog-heading h1{
-
-    font-family:'Baloo 2',cursive;
-
-    font-size:3rem;
-
-    color:#5b476d;
-
-    text-shadow:
-    3px 3px white,
-    0 5px 15px rgba(255,143,208,.4);
-
-}
-
-
-.blog-heading p{
-
-    color:#7a6f95;
-
-    font-weight:700;
-
-}
-
-
-
-/* blog grid */
-
-
-.blog-container{
-
-    display:grid;
-
-    grid-template-columns:
-    repeat(2,1fr);
-
-    gap:25px;
-
-}
-
-
-
-/* card */
-
-
-.blog-card{
-
-    background:rgba(255,255,255,.75);
-
-    border:5px solid #ffc3e8;
-
-    border-radius:25px;
-
-    padding:15px;
-
-    box-shadow:
-    0 8px 20px rgba(255,143,208,.25);
-
-    transition:.3s;
-
-}
-
-
-.blog-card:hover{
-
-    transform:translateY(-5px);
-
-    border-color:#ff8fd0;
-
-}
-
-
-
-/* thumbnail */
-
-
-.blog-thumb{
-
-    width:100%;
-
-    height:220px;
-
-    border-radius:20px;
-
-    overflow:hidden;
-
-    border:3px solid #f6c6d8;
-
-    background:#cfeaff;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-}
-
-
-
-.blog-thumb img{
-
-    width:100%;
-
-    height:100%;
-
-    object-fit:cover;
-
-}
-
-
-
-.no-thumb{
-
-    color:#8a7fa0;
-
-    font-weight:700;
-
-    text-align:center;
-
-}
-
-
-
-/* content */
-
-
-.blog-content{
-
-    padding:15px 5px;
-
-}
-
-
-.blog-content h2{
-
-    font-family:'Baloo 2',cursive;
-
-    color:#5b476d;
-
-    font-size:1.5rem;
-
-    margin-bottom:8px;
-
-}
-
-
-.blog-meta{
-
-    font-size:.85rem;
-
-    color:#8a7fa0;
-
-    margin-bottom:12px;
-
-    font-weight:600;
-
-}
-
-
-.blog-preview{
-
-    color:#4a3f66;
-
-    line-height:1.5;
-
-}
-
-
-
-/* button */
-
-
-.read-btn{
-
-    display:inline-block;
-
-    margin-top:15px;
-
-    padding:9px 20px;
-
-    background:#ff8fd0;
-
-    color:white;
-
-    text-decoration:none;
-
-    border-radius:20px;
-
-    font-weight:700;
-
-    transition:.2s;
-
-}
-
-
-.read-btn:hover{
-
-    background:#c8b6ff;
-
-}
-
-
-
-/* empty */
-
-
-.empty-blog{
-
-    text-align:center;
-
-    padding:40px;
-
-    font-weight:700;
-
-    color:#7a6f95;
-
-}
-
-
-
-/* mobile */
-
-
-@media(max-width:800px){
-
-
-.blog-page{
-
-    margin:20px 12px;
-
-    padding:15px;
-
-}
-
-
-.blog-heading h1{
-
-    font-size:2.2rem;
-
-}
-
-
-.blog-container{
-
-    grid-template-columns:1fr;
-
-}
-
-
-.blog-thumb{
-
-    height:200px;
-
-}
-
-
-}
-
-
-</style>
-
-
-
-
-<div class="blog-page">
-
-
-<div class="blog-heading">
-
-<h1>
-⋆｡°✩ Pinky Blogs ⋆｡°✩
-</h1>
-
-<p>
-Read cozy stories, memories and creations from our community
-</p>
-
+<div class="neo-blog-shell">
+    <header class="neo-blog-hero neo-window">
+        <div class="neo-titlebar"><span>PINKY_BLOGS.EXE</span><span class="window-dots" aria-hidden="true">─ □ ×</span></div>
+        <div class="neo-hero-content">
+            <img class="neo-hero-banner" src="assests/images/blog-banner.png?v=<?= (int) filemtime(__DIR__ . '/assests/images/blog-banner.png') ?>" alt="" aria-hidden="true">
+            <div>
+                <p class="neo-kicker">community journal online ♡</p>
+                <h1>Pinky Blogs</h1>
+                <p>Cozy stories, reviews, memories and creations from our little corner of the web.</p>
+            </div>
+            <?php if (isLoggedIn()): ?><a href="create.php" class="neo-action">+ new entry</a><?php endif; ?>
+        </div>
+        <div class="neo-statusbar"><span>● ONLINE</span><span><?= count($blogs) ?> journal entries loaded</span></div>
+    </header>
+
+    <div class="neo-blog-layout">
+        <main class="neo-feed neo-window">
+            <div class="neo-titlebar"><span>♡ LATEST POSTS</span><span>scroll to browse ↓</span></div>
+            <div class="neo-feed-inner">
+                <?php if (!$blogs): ?>
+                    <div class="neo-empty"><strong>No entries yet!</strong><p>The journal is waiting for its first story ♡</p></div>
+                <?php else: ?>
+                    <?php foreach ($blogs as $index => $blog):
+                        $thumb = basename((string) ($blog['thumbnail'] ?? ''));
+                        $thumbFile = __DIR__ . '/assests/blog-thumbnails/' . $thumb;
+                    ?>
+                        <article class="neo-post<?= ($thumb && file_exists($thumbFile)) ? ' has-thumbnail' : '' ?>">
+                            <div class="neo-post-number">ENTRY_<?= str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT) ?></div>
+                            <div class="neo-post-body">
+                                <?php if ($thumb && file_exists($thumbFile)): ?>
+                                    <a class="neo-post-thumb" href="view.php?id=<?= (int) $blog['id'] ?>">
+                                        <img src="assests/blog-thumbnails/<?= rawurlencode($thumb) ?>" alt="Thumbnail for <?= e($blog['title']) ?>">
+                                    </a>
+                                <?php endif; ?>
+                                <div class="neo-post-copy">
+                                    <div class="neo-post-meta"><span>@<?= e($blog['username']) ?></span><time datetime="<?= e(date('Y-m-d', strtotime($blog['created_at']))) ?>"><?= e(formatDate($blog['created_at'])) ?></time></div>
+                                    <h2><a href="view.php?id=<?= (int) $blog['id'] ?>"><?= e($blog['title']) ?></a></h2>
+                                    <p><?= e(createExcerpt($blog['content'], 180)) ?></p>
+                                    <a class="neo-read-more" href="view.php?id=<?= (int) $blog['id'] ?>">open entry <span>→</span></a>
+                                </div>
+                            </div>
+                        </article>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
+        </main>
+
+        <aside class="neo-blog-sidebar">
+            <section class="neo-window neo-widget">
+                <div class="neo-titlebar"><span>ABOUT.TXT</span><span>♡</span></div>
+                <div class="neo-widget-content">
+                    <h2>Welcome!</h2>
+                    <p>A shared journal for anime thoughts, personal stories and everything our writers love.</p>
+                    <div class="neo-mini-stats"><span><strong><?= count($blogs) ?></strong> posts</span><span><strong><?= count($recentAuthors) ?></strong> writers</span></div>
+                </div>
+            </section>
+
+            <section class="neo-window neo-widget">
+                <div class="neo-titlebar"><span>WRITERS.LOG</span><span>★</span></div>
+                <div class="neo-widget-content">
+                    <?php if ($recentAuthors): ?>
+                        <ul class="neo-writer-list"><?php foreach (array_slice($recentAuthors, 0, 8) as $author): ?><li><span>♥</span> <?= e($author) ?></li><?php endforeach; ?></ul>
+                    <?php else: ?><p>No writers online yet.</p><?php endif; ?>
+                </div>
+            </section>
+
+            <section class="neo-window neo-widget">
+                <div class="neo-titlebar"><span>QUICK LINKS</span><span>⌁</span></div>
+                <nav class="neo-quick-links">
+                    <a href="index.php">⌂ homepage</a>
+                    <?php if (isLoggedIn()): ?><a href="create.php">✎ write a blog</a><a href="profile.php">♡ my profile</a><?php else: ?><a href="login.php">♙ sign in</a><a href="register.php">+ join us</a><?php endif; ?>
+                </nav>
+            </section>
+
+            <section class="neo-window neo-widget neo-warning-widget">
+                <div class="neo-titlebar"><span>⚠ WARNING!</span><span>!</span></div>
+                <?php if ($gif = $widgetGif('warning.gif')): ?><img class="neo-widget-gif" src="<?= e($gif) ?>" alt="Warning decoration"><?php endif; ?>
+                <div class="neo-widget-content"><p>This corner of the web contains strong opinions, anime spoilers and lots of pink.</p></div>
+            </section>
+
+            <section class="neo-window neo-widget">
+                <div class="neo-titlebar"><span>CONTACT.ME</span><span>@</span></div>
+                <?php if ($gif = $widgetGif('contact.gif')): ?><img class="neo-widget-gif" src="<?= e($gif) ?>" alt="Contact decoration"><?php endif; ?>
+                <div class="neo-widget-content">
+                    <p>Questions, ideas or just want to say hi?</p>
+                    <a class="neo-widget-button" href="mailto:dharinithiyagarajahdharini@gmail.com">send an email</a>
+                </div>
+            </section>
+
+            <section class="neo-window neo-widget">
+                <div class="neo-titlebar"><span>CHAT.LOG</span><span>●</span></div>
+                <?php if ($gif = $widgetGif('chat.gif')): ?><img class="neo-widget-gif" src="<?= e($gif) ?>" alt="Chat decoration"><?php endif; ?>
+                <div class="neo-widget-content neo-chat-widget">
+                    <div id="chatMessages" class="neo-chat-messages" aria-live="polite">
+                        <p class="neo-chat-loading">Loading messages...</p>
+                    </div>
+                    <?php if (isLoggedIn()): ?>
+                        <form id="chatForm" class="neo-chat-form">
+                            <input type="hidden" name="csrf_token" value="<?= e($_SESSION['chat_csrf']) ?>">
+                            <label for="chatMessage">Chatting as <strong><?= e($_SESSION['username']) ?></strong></label>
+                            <div><input id="chatMessage" name="message" maxlength="300" autocomplete="off" placeholder="Write a message..." required><button type="submit">Send</button></div>
+                            <span id="chatStatus" class="neo-chat-status" aria-live="polite"></span>
+                        </form>
+                    <?php else: ?>
+                        <p class="neo-chat-login"><a href="login.php">Sign in</a> to join the chat.</p>
+                    <?php endif; ?>
+                </div>
+            </section>
+
+            <section class="neo-window neo-widget">
+                <div class="neo-titlebar"><span>HOME.URL</span><span>⌂</span></div>
+                <?php if ($gif = $widgetGif('home.gif')): ?><img class="neo-widget-gif" src="<?= e($gif) ?>" alt="Home decoration"><?php endif; ?>
+                <div class="neo-widget-content"><p>Return to the main room.</p><a class="neo-widget-button" href="index.php">go home</a></div>
+            </section>
+
+            <section class="neo-window neo-widget neo-music-widget">
+                <div class="neo-titlebar"><span>MUSIC_PLAYER</span><span>♫</span></div>
+                <?php if ($gif = $widgetGif('music-player.gif')): ?><img class="neo-widget-gif" src="<?= e($gif) ?>" alt="Music player decoration"><?php endif; ?>
+                <div class="neo-widget-content">
+                    <p class="neo-track-name">♫ Cozy Song</p>
+                    <audio id="blogMusic" preload="metadata" src="assests/music/cozy-song.mp3"></audio>
+                    <div class="neo-player-controls"><button type="button" id="blogMusicButton" aria-label="Play music">▶</button><input id="blogMusicProgress" type="range" min="0" value="0" step="1" aria-label="Music progress"><span id="blogMusicTime">0:00</span></div>
+                </div>
+            </section>
+
+            <section class="neo-window neo-widget">
+                <div class="neo-titlebar"><span>YT_NEWS</span><span>▶</span></div>
+                <div class="neo-youtube-player">
+                    <iframe
+                        src="https://www.youtube-nocookie.com/embed/qCt9fLpPfdM?autoplay=1&amp;mute=1&amp;loop=1&amp;playlist=qCt9fLpPfdM&amp;playsinline=1&amp;controls=1&amp;rel=0"
+                        title="Pinky Blog YouTube news video"
+                        allow="autoplay; encrypted-media; picture-in-picture"
+                        referrerpolicy="strict-origin-when-cross-origin"
+                        allowfullscreen></iframe>
+                </div>
+                <div class="neo-widget-content"><h2>Latest video</h2><p>Now playing automatically with sound muted.</p></div>
+            </section>
+
+        </aside>
+    </div>
 </div>
 
-
-
-<div class="blog-container">
-
-
-<?php if(empty($blogs)): ?>
-
-
-<div class="empty-blog">
-
-No blogs available yet ♡
-
-</div>
-
-
-<?php else: ?>
-
-
-<?php foreach($blogs as $blog): ?>
-
-
-<div class="blog-card">
-
-
-
-<div class="blog-thumb">
-
-
-<?php if(!empty($blog['thumbnail'])): ?>
-
-
-<img 
-src="assets/blog-thumbnails/<?= htmlspecialchars($blog['thumbnail']) ?>"
-alt="Blog thumbnail"
->
-
-
-<?php else: ?>
-
-
-<div class="no-thumb">
-
-Add Blog Thumbnail
-
-</div>
-
-
-<?php endif; ?>
-
-
-</div>
-
-
-
-
-<div class="blog-content">
-
-
-<h2>
-
-<?= htmlspecialchars($blog['title']) ?>
-
-</h2>
-
-
-
-<div class="blog-meta">
-
-✦ By <?= htmlspecialchars($blog['username']) ?>
-
-<br>
-
-✦ <?= htmlspecialchars(formatDate($blog['created_at'])) ?>
-
-</div>
-
-
-
-
-<p class="blog-preview">
-
-
-<?= htmlspecialchars(
-substr($blog['content'],0,150)
-) ?>...
-
-
-</p>
-
-
-
-
-<a 
-href="view.php?id=<?= $blog['id'] ?>"
-class="read-btn">
-
-Read More
-
-</a>
-
-
-
-</div>
-
-
-
-</div>
-
-
-<?php endforeach; ?>
-
-
-<?php endif; ?>
-
-
-</div>
-
-
-</div>
-
-
+<script>
+(() => {
+    const audio = document.getElementById('blogMusic');
+    const playButton = document.getElementById('blogMusicButton');
+    const progress = document.getElementById('blogMusicProgress');
+    const time = document.getElementById('blogMusicTime');
+    const formatTime = seconds => `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, '0')}`;
+    if (audio && playButton) {
+        playButton.addEventListener('click', () => audio.paused ? audio.play() : audio.pause());
+        audio.addEventListener('play', () => { playButton.textContent = '❚❚'; playButton.setAttribute('aria-label', 'Pause music'); });
+        audio.addEventListener('pause', () => { playButton.textContent = '▶'; playButton.setAttribute('aria-label', 'Play music'); });
+        audio.addEventListener('loadedmetadata', () => { progress.max = Math.floor(audio.duration || 0); });
+        audio.addEventListener('timeupdate', () => { progress.value = Math.floor(audio.currentTime); time.textContent = formatTime(audio.currentTime); });
+        progress.addEventListener('input', () => { audio.currentTime = Number(progress.value); });
+    }
+
+    const messagesBox = document.getElementById('chatMessages');
+    const chatForm = document.getElementById('chatForm');
+    const chatStatus = document.getElementById('chatStatus');
+    const renderMessages = messages => {
+        messagesBox.replaceChildren();
+        if (!messages.length) {
+            const empty = document.createElement('p');
+            empty.className = 'neo-chat-loading';
+            empty.textContent = 'No messages yet. Say hello! ♡';
+            messagesBox.append(empty);
+            return;
+        }
+        messages.forEach(message => {
+            const item = document.createElement('div');
+            item.className = 'neo-chat-message';
+            const header = document.createElement('div');
+            const name = document.createElement('strong');
+            const time = document.createElement('time');
+            const text = document.createElement('p');
+            name.textContent = '@' + message.username;
+            time.textContent = message.time;
+            text.textContent = message.message;
+            header.append(name, time);
+            item.append(header, text);
+            messagesBox.append(item);
+        });
+        messagesBox.scrollTop = messagesBox.scrollHeight;
+    };
+    const loadChat = async () => {
+        try {
+            const response = await fetch('chat.php', { headers: { Accept: 'application/json' }, cache: 'no-store' });
+            if (!response.ok) throw new Error('Chat unavailable');
+            const data = await response.json();
+            renderMessages(data.messages || []);
+        } catch { if (chatStatus) chatStatus.textContent = 'Could not refresh chat.'; }
+    };
+    chatForm?.addEventListener('submit', async event => {
+        event.preventDefault();
+        const button = chatForm.querySelector('button');
+        button.disabled = true;
+        chatStatus.textContent = '';
+        try {
+            const response = await fetch('chat.php', { method: 'POST', body: new FormData(chatForm), headers: { Accept: 'application/json' } });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || 'Message could not be sent.');
+            chatForm.reset();
+            await loadChat();
+        } catch (error) { chatStatus.textContent = error.message; }
+        finally { button.disabled = false; }
+    });
+    loadChat();
+    window.setInterval(loadChat, 3000);
+})();
+</script>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

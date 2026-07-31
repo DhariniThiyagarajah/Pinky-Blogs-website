@@ -9,6 +9,7 @@
 $pageTitle = 'View Blog';
 require_once __DIR__ . '/includes/db.php';
 require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/includes/comments.php';
 
 $blogId = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 
@@ -36,10 +37,19 @@ if (!$blog) {
 $pageTitle = $blog['title'];
 $isOwner = isLoggedIn() && (int) $_SESSION['user_id'] === (int) $blog['user_id'];
 
-$countStmt = $conn->prepare('SELECT COUNT(*) as total FROM blogPost');
-$countStmt->execute();
-$totalPosts = (int) $countStmt->get_result()->fetch_assoc()['total'];
-$countStmt->close();
+ensureCommentsTable($conn);
+$stmt = $conn->prepare(
+    'SELECT c.comment, c.created_at, u.username, u.profile_image
+     FROM blogComment c
+     JOIN user u ON c.user_id = u.id
+     WHERE c.blog_id = ?
+     ORDER BY c.created_at DESC, c.id DESC'
+);
+$stmt->bind_param('i', $blogId);
+$stmt->execute();
+$comments = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+$stmt->close();
+
 ?>
 
 <div class="inner-layout">
@@ -64,8 +74,51 @@ $countStmt->close();
                 <?php endif; ?>
             </div>
         </article>
+
+        <section class="blog-comments" id="comments">
+            <div class="comments-heading">
+                <div><p>COMMUNITY_NOTES.TXT</p><h2>Comments</h2></div>
+                <span><?= count($comments) ?> <?= count($comments) === 1 ? 'comment' : 'comments' ?></span>
+            </div>
+
+            <?php if (isset($_GET['comment_added'])): ?>
+                <p class="comment-message success">Your comment was added.</p>
+            <?php elseif (isset($_GET['comment_error'])): ?>
+                <p class="comment-message error"><?php
+                    echo match ($_GET['comment_error']) {
+                        'empty' => 'Please write a comment first.',
+                        'long' => 'Please keep your comment under 500 characters.',
+                        default => 'The comment could not be saved. Please try again.'
+                    };
+                ?></p>
+            <?php endif; ?>
+
+            <?php if (isLoggedIn()): ?>
+                <form class="comment-form" method="POST" action="comment.php">
+                    <input type="hidden" name="blog_id" value="<?= (int) $blogId ?>">
+                    <input type="hidden" name="comment_token" value="<?= e(commentToken()) ?>">
+                    <label for="comment">Join the conversation</label>
+                    <textarea id="comment" name="comment" rows="4" maxlength="500" placeholder="Write something kind and clear..." required></textarea>
+                    <div><small>Up to 500 characters</small><button class="btn btn-primary" type="submit">Post comment</button></div>
+                </form>
+            <?php else: ?>
+                <div class="comment-login">Want to join the conversation? <a href="login.php">Log in to comment</a>.</div>
+            <?php endif; ?>
+
+            <div class="comment-list">
+                <?php if (!$comments): ?>
+                    <p class="no-comments">No comments yet. Be the first to say hello!</p>
+                <?php else: ?>
+                    <?php foreach ($comments as $item): ?>
+                        <article class="comment-card">
+                            <div class="comment-avatar"><?= e(mb_strtoupper(mb_substr($item['username'], 0, 1))) ?></div>
+                            <div><header><strong><?= e($item['username']) ?></strong><time><?= e(formatDate($item['created_at'])) ?></time></header><p><?= nl2br(e($item['comment'])) ?></p></div>
+                        </article>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
+        </section>
     </div>
-    <?php require_once __DIR__ . '/includes/sidebar.php'; ?>
 </div>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

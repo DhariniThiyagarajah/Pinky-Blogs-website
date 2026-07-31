@@ -1,0 +1,74 @@
+/* Create Blog — deeper Pinky blog palette */
+body:has(.create-blog-page) {
+    color: #3a3450;
+    background-image:
+        radial-gradient(circle, rgba(255,255,255,.72) 1.5px, transparent 1.5px),
+        radial-gradient(circle at 12% 8%, rgba(185,196,208,.7), transparent 40%),
+        radial-gradient(circle at 88% 12%, rgba(220,128,177,.42), transparent 38%),
+        linear-gradient(180deg, #edc9dc, #eeb8d3 55%, #e7abc9);
+}
+
+body:has(.create-blog-page) .main-content { width: 100%; max-width: none; padding: 22px 16px 50px; }
+body:has(.create-blog-page) .inner-layout { width: min(980px, 96%); max-width: none; display: block; margin: 0 auto; }
+body:has(.create-blog-page) .inner-main { width: 100%; }
+body:has(.create-blog-page) .form-container-wide {
+    width: 100%;
+    padding: clamp(24px, 4vw, 42px);
+    color: #3a3450;
+    background-color: #faedf3;
+    background-image: radial-gradient(circle, rgba(216,93,157,.14) 1px, transparent 1px);
+    background-size: 18px 18px;
+    border: 3px solid #9aa8b8;
+    border-radius: 22px;
+    box-shadow: 0 14px 34px rgba(58,52,80,.18), inset 0 0 0 4px #fff0fa;
+}
+
+body:has(.create-blog-page) .form-container-wide::before,
+body:has(.create-blog-page) .form-container-wide::after { background: #d85d9d; }
+
+body:has(.create-blog-page) .box-cap {
+    color: #fff;
+    background: linear-gradient(90deg, #d85d9d, #d986b1);
+    border-color: #d99aba;
+    box-shadow: 0 7px 16px rgba(58,52,80,.16), inset 0 1px 0 rgba(255,255,255,.65);
+}
+
+body:has(.create-blog-page) .page-header h1 { color: #3a3450; font-size: clamp(1.8rem, 3vw, 2.5rem); }
+body:has(.create-blog-page) .page-header p { color: #4a3f66; }
+body:has(.create-blog-page) .form-group label { color: #3a3450; font-weight: 700; }
+body:has(.create-blog-page) .form-group small,
+body:has(.create-blog-page) .char-counter { color: #7a6f95; }
+
+body:has(.create-blog-page) input,
+body:has(.create-blog-page) textarea {
+    color: #3a3450;
+    background: rgba(255,255,255,.9);
+    border: 2px solid #d99aba;
+    border-radius: 12px;
+}
+
+body:has(.create-blog-page) input:focus,
+body:has(.create-blog-page) textarea:focus {
+    outline: 3px solid rgba(216,93,157,.16);
+    border-color: #d85d9d;
+    box-shadow: none;
+}
+
+body:has(.create-blog-page) input[type="file"] { padding: 10px; background: #f7e2ed; }
+body:has(.create-blog-page) input[type="file"]::file-selector-button {
+    margin-right: 12px; padding: 8px 12px;
+    color: #fff; background: #d85d9d;
+    border: 0; border-radius: 8px; cursor: pointer;
+}
+
+body:has(.create-blog-page) .btn { border-color: #bf4e89; }
+body:has(.create-blog-page) .btn-primary { color: #fff; background: #d85d9d; box-shadow: 0 6px 14px rgba(58,52,80,.15); }
+body:has(.create-blog-page) .btn-primary:hover { background: #b94d84; }
+body:has(.create-blog-page) .btn-secondary { color: #3a3450; background: #cbd3dc; border-color: #9aa8b8; box-shadow: 0 5px 12px rgba(58,52,80,.12); }
+body:has(.create-blog-page) .btn-secondary:hover { background: #b9c4d0; }
+
+@media (max-width: 600px) {
+    body:has(.create-blog-page) .main-content { padding-inline: 8px; }
+    body:has(.create-blog-page) .inner-layout { width: 100%; }
+    body:has(.create-blog-page) .form-container-wide { padding: 24px 16px; border-radius: 16px; }
+}
