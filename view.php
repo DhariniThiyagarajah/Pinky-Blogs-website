@@ -71,6 +71,10 @@ $stmt->close();
                 <a href="index.php" class="btn btn-secondary btn-small">&larr; Back to Home</a>
                 <?php if ($isOwner): ?>
                     <a href="edit.php?id=<?= (int) $blog['id'] ?>" class="btn btn-primary btn-small">Edit</a>
+                    <form method="POST" action="delete.php" data-confirm-delete data-blog-title="<?= e($blog['title']) ?>">
+                        <input type="hidden" name="id" value="<?= (int) $blog['id'] ?>">
+                        <button type="submit" class="btn btn-danger btn-small">Delete</button>
+                    </form>
                 <?php endif; ?>
             </div>
         </article>

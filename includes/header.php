@@ -93,7 +93,7 @@ $isHome = $currentPage === 'index.php';
     <?php if (isLoggedIn()): ?>
 
     <a href="profile.php" class="<?= in_array($currentPage, ['profile.php', 'edit_profile.php', 'create.php', 'edit.php'], true) ? 'active' : '' ?>">
-        <small>Profile</small>
+        <small>Dashboard</small>
     </a>
 
     <a href="logout.php">

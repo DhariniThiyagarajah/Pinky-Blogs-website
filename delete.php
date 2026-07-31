@@ -12,14 +12,14 @@ require_once __DIR__ . '/includes/auth.php';
 requireLogin();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: dashboard.php');
+    header('Location: profile.php');
     exit;
 }
 
 $blogId = isset($_POST['id']) ? (int) $_POST['id'] : 0;
 
 if ($blogId <= 0) {
-    header('Location: dashboard.php');
+    header('Location: profile.php');
     exit;
 }
 
@@ -32,5 +32,5 @@ $stmt->bind_param('ii', $blogId, $userId);
 $stmt->execute();
 $stmt->close();
 
-header('Location: dashboard.php?deleted=1');
+header('Location: profile.php?deleted=1');
 exit;

@@ -1,3 +1,26 @@
+<?php
+require_once __DIR__ . '/includes/db.php';
+require_once __DIR__ . '/includes/auth.php';
+
+// Load every blog for the home-page feed, newest first.
+$homeBlogs = $conn->query(
+    'SELECT b.id, b.title, b.content, b.thumbnail, b.created_at, u.username
+     FROM blogPost b
+     JOIN user u ON b.user_id = u.id
+     ORDER BY b.created_at DESC'
+)->fetch_all(MYSQLI_ASSOC);
+
+$homeThumbnail = static function (?string $filename): ?string {
+    if (!$filename) {
+        return null;
+    }
+
+    $safeName = basename($filename);
+    return is_file(__DIR__ . '/assests/images/' . $safeName)
+        ? 'assests/images/' . rawurlencode($safeName)
+        : null;
+};
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -619,6 +642,26 @@
         .site-title h1 { font-size: 2rem; }
     }
 
+    /* Database-powered blog list required on the home page. */
+    .home-blog-feed { position: relative; z-index: 3; width: min(1180px, calc(100% - 2rem)); margin: 28px auto 38px; padding: 25px; background: rgba(255,249,242,.92); border: 3px solid #d56d9f; border-radius: 22px; box-shadow: 9px 10px 0 rgba(185,87,140,.18); }
+    .home-blog-heading { display: flex; align-items: end; justify-content: space-between; gap: 18px; padding-bottom: 15px; border-bottom: 2px dashed #d99aba; }
+    .home-blog-heading p { color: #b9578c; font-size: .72rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+    .home-blog-heading h2 { color: #4a3f66; font-size: clamp(1.65rem,3vw,2.2rem); }
+    .home-blog-heading a { flex: 0 0 auto; padding: 9px 16px; color: #fff; background: #b9578c; border: 2px solid #8f446d; border-radius: 999px; font-size: .8rem; font-weight: 800; text-decoration: none; }
+    .home-blog-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 16px; margin-top: 20px; }
+    .home-blog-card { overflow: hidden; display: flex; flex-direction: column; min-width: 0; background: #fffdf7; border: 2px solid #d99aba; border-radius: 15px; box-shadow: 4px 5px 0 #f3b4d2; transition: transform .2s ease,box-shadow .2s ease; }
+    .home-blog-card:hover { transform: translateY(-4px); box-shadow: 6px 8px 0 #eca8c8; }
+    .home-blog-image { width: 100%; height: 175px; display: block; object-fit: cover; border-bottom: 2px solid #d99aba; }
+    .home-blog-no-image { height: 92px; display: grid; place-items: center; color: #b9578c; background: radial-gradient(circle,rgba(255,255,255,.8) 1.5px,transparent 1.5px),linear-gradient(135deg,#f5bfd5,#ffe5f1); background-size: 18px 18px,auto; font-size: 1.6rem; }
+    .home-blog-card-body { display: flex; flex: 1; flex-direction: column; padding: 16px; }
+    .home-blog-meta { color: #9b6c84; font-size: .7rem; font-weight: 700; }
+    .home-blog-card h3 { margin: 8px 0; color: #4a3f66; font-size: 1.08rem; line-height: 1.3; }
+    .home-blog-card p:not(.home-blog-meta) { color: #6d5969; font-size: .82rem; line-height: 1.55; }
+    .home-blog-card .read-blog { align-self: flex-start; margin-top: auto; padding-top: 14px; color: #b9578c; font-size: .78rem; font-weight: 800; text-decoration: none; }
+    .home-blog-empty { grid-column: 1/-1; padding: 35px; text-align: center; color: #765b72; background: #ffe5f1; border: 2px dashed #d99aba; border-radius: 13px; }
+    @media(max-width:900px){.home-blog-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:600px){.home-blog-feed{width:calc(100% - 1rem);padding:18px 13px}.home-blog-heading{align-items:flex-start;flex-direction:column}.home-blog-grid{grid-template-columns:1fr}.home-blog-image{height:190px}}
+
 </style>
 </head>
 <body>
@@ -752,6 +795,35 @@
         </section>
 
     </main>
+
+    <section class="home-blog-feed" aria-labelledby="latest-blogs-title">
+        <div class="home-blog-heading">
+            <div><p>Fresh from the community</p><h2 id="latest-blogs-title">Latest Blogs</h2></div>
+            <?php if (isLoggedIn()): ?><a href="create.php">Write a blog</a><?php else: ?><a href="login.php">Log in to write</a><?php endif; ?>
+        </div>
+
+        <div class="home-blog-grid">
+            <?php if (!$homeBlogs): ?>
+                <div class="home-blog-empty">No blogs have been published yet.</div>
+            <?php else: ?>
+                <?php foreach ($homeBlogs as $homeBlog): $thumbnail = $homeThumbnail($homeBlog['thumbnail']); ?>
+                    <article class="home-blog-card">
+                        <?php if ($thumbnail): ?>
+                            <img class="home-blog-image" src="<?= e($thumbnail) ?>" alt="Thumbnail for <?= e($homeBlog['title']) ?>">
+                        <?php else: ?>
+                            <div class="home-blog-no-image" aria-hidden="true">♡ ✦ ♡</div>
+                        <?php endif; ?>
+                        <div class="home-blog-card-body">
+                            <p class="home-blog-meta">By <?= e($homeBlog['username']) ?> · <?= e(formatDate($homeBlog['created_at'])) ?></p>
+                            <h3><?= e($homeBlog['title']) ?></h3>
+                            <p><?= e(createExcerpt($homeBlog['content'], 125)) ?></p>
+                            <a class="read-blog" href="view.php?id=<?= (int) $homeBlog['id'] ?>">Read full blog →</a>
+                        </div>
+                    </article>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
+    </section>
 
     <div class="floor"></div>
 

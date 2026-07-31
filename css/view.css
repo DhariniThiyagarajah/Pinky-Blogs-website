@@ -117,6 +117,9 @@ body:has(.blog-view) .btn-primary { color: #fff; background: #d85d9d; }
 body:has(.blog-view) .btn-primary:hover { background: #b94d84; }
 body:has(.blog-view) .btn-secondary { color: #3a3450; background: #cbd3dc; border-color: #9aa8b8; box-shadow: 0 5px 12px rgba(58,52,80,.12); }
 body:has(.blog-view) .btn-secondary:hover { color: #3a3450; background: #b9c4d0; border-color: #9aa8b8; }
+body:has(.blog-view) .blog-view .btn-group form { display: inline-flex; margin: 0; }
+body:has(.blog-view) .blog-view .btn-danger { color: #fff; background: #c95b72; border-color: #a84459; }
+body:has(.blog-view) .blog-view .btn-danger:hover { background: #ad465c; }
 
 /* Simple comments for every blog post */
 .blog-comments { margin-top: 24px; padding: clamp(22px, 3vw, 34px); color: #3a3450; background: #faedf3; border: 3px solid #d85d9d; border-radius: 20px; box-shadow: 0 12px 28px rgba(58,52,80,.16), inset 0 0 0 4px #f7e2ed; }
