@@ -1,11 +1,7 @@
 -- Anime Journal Database Schema
 -- Import this file via phpMyAdmin or MySQL CLI before running the application.
 
-CREATE DATABASE IF NOT EXISTS anime_journal
-    CHARACTER SET utf8mb4
-    COLLATE utf8mb4_unicode_ci;
-
-USE anime_journal;
+-- Select the target database in phpMyAdmin before importing this file.
 
 -- Users table: stores registered accounts
 CREATE TABLE IF NOT EXISTS user (
@@ -24,7 +20,7 @@ CREATE TABLE IF NOT EXISTS user (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Community chat messages
-CREATE TABLE IF NOT EXISTS chatMessage (
+CREATE TABLE IF NOT EXISTS chatmessage (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     message VARCHAR(300) NOT NULL,
@@ -34,7 +30,7 @@ CREATE TABLE IF NOT EXISTS chatMessage (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Blog posts table: stores user-created blog entries
-CREATE TABLE IF NOT EXISTS blogPost (
+CREATE TABLE IF NOT EXISTS blogpost (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     title VARCHAR(200) NOT NULL,
@@ -48,17 +44,17 @@ CREATE TABLE IF NOT EXISTS blogPost (
         ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE INDEX idx_blog_user_id ON blogPost(user_id);
+CREATE INDEX idx_blog_user_id ON blogpost(user_id);
 
 -- Blog comments: signed-in users can discuss every blog post
-CREATE TABLE IF NOT EXISTS blogComment (
+CREATE TABLE IF NOT EXISTS blogcomment (
     id INT AUTO_INCREMENT PRIMARY KEY,
     blog_id INT NOT NULL,
     user_id INT NOT NULL,
     comment VARCHAR(500) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     INDEX idx_comment_blog_created (blog_id, created_at),
-    CONSTRAINT fk_comment_blog FOREIGN KEY (blog_id) REFERENCES blogPost(id) ON DELETE CASCADE,
+    CONSTRAINT fk_comment_blog FOREIGN KEY (blog_id) REFERENCES blogpost(id) ON DELETE CASCADE,
     CONSTRAINT fk_comment_user FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -71,7 +67,7 @@ INSERT INTO user (username, email, password, role) VALUES
 ('mochi_reviews', 'mochi@animejournal.test', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'user'),
 ('lantern_dreams', 'lantern@animejournal.test', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'user');
 
-INSERT INTO blogPost (user_id, title, content, created_at, updated_at) VALUES
+INSERT INTO blogpost (user_id, title, content, created_at, updated_at) VALUES
 (1, 'Why Spirited Away Still Feels Like Coming Home',
 'Every time I revisit Spirited Away, I am struck by how gently it welcomes you back. Chihiro''s journey through the spirit world is not just a fantasy adventure — it is a story about growing up, losing your name, and finding courage in unfamiliar places.
 

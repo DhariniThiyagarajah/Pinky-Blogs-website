@@ -5,7 +5,7 @@ require_once __DIR__ . '/includes/header.php';
 
 $stmt = $conn->prepare(
     'SELECT b.id, b.title, b.content, b.created_at, b.thumbnail, u.username
-     FROM blogPost b JOIN user u ON b.user_id = u.id
+     FROM blogpost b JOIN user u ON b.user_id = u.id
      ORDER BY b.created_at DESC'
 );
 $stmt->execute();

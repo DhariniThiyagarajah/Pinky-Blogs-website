@@ -129,7 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
     <?php
-    $countStmt = $conn->prepare('SELECT COUNT(*) as total FROM blogPost');
+    $countStmt = $conn->prepare('SELECT COUNT(*) as total FROM blogpost');
     $countStmt->execute();
     $totalPosts = (int) $countStmt->get_result()->fetch_assoc()['total'];
     $countStmt->close();

@@ -8,7 +8,7 @@ header('Cache-Control: no-store');
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $result = $conn->query(
         'SELECT cm.message, cm.created_at, u.username
-         FROM chatMessage cm JOIN user u ON cm.user_id = u.id
+         FROM chatmessage cm JOIN user u ON cm.user_id = u.id
          ORDER BY cm.id DESC LIMIT 50'
     );
     $messages = array_reverse($result->fetch_all(MYSQLI_ASSOC));
@@ -55,7 +55,7 @@ if (isset($_SESSION['last_chat_message']) && $now - (int) $_SESSION['last_chat_m
 }
 
 $userId = (int) $_SESSION['user_id'];
-$stmt = $conn->prepare('INSERT INTO chatMessage (user_id, message) VALUES (?, ?)');
+$stmt = $conn->prepare('INSERT INTO chatmessage (user_id, message) VALUES (?, ?)');
 $stmt->bind_param('is', $userId, $message);
 $stmt->execute();
 $stmt->close();

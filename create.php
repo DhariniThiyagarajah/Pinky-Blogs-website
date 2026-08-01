@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $userId = (int) $_SESSION['user_id'];
 
         $stmt = $conn->prepare(
-            'INSERT INTO blogPost (user_id, title, content, thumbnail) VALUES (?, ?, ?, ?)'
+            'INSERT INTO blogpost (user_id, title, content, thumbnail) VALUES (?, ?, ?, ?)'
         );
 
         $stmt->bind_param('isss', $userId, $title, $content, $thumbnail);

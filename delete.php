@@ -27,7 +27,7 @@ requireBlogOwnership($conn, $blogId);
 
 $userId = (int) $_SESSION['user_id'];
 
-$stmt = $conn->prepare('DELETE FROM blogPost WHERE id = ? AND user_id = ?');
+$stmt = $conn->prepare('DELETE FROM blogpost WHERE id = ? AND user_id = ?');
 $stmt->bind_param('ii', $blogId, $userId);
 $stmt->execute();
 $stmt->close();

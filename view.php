@@ -21,7 +21,7 @@ if ($blogId <= 0) {
 
 $stmt = $conn->prepare(
     'SELECT b.id, b.title, b.content, b.thumbnail, b.created_at, b.updated_at, b.user_id, u.username
-     FROM blogPost b
+     FROM blogpost b
      JOIN user u ON b.user_id = u.id
      WHERE b.id = ?'
 );
@@ -41,7 +41,7 @@ $isOwner = isLoggedIn() && (int) $_SESSION['user_id'] === (int) $blog['user_id']
 ensureCommentsTable($conn);
 $stmt = $conn->prepare(
     'SELECT c.comment, c.created_at, u.username, u.profile_image
-     FROM blogComment c
+     FROM blogcomment c
      JOIN user u ON c.user_id = u.id
      WHERE c.blog_id = ?
      ORDER BY c.created_at DESC, c.id DESC'

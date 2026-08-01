@@ -17,7 +17,7 @@ $user = $stmt->get_result()->fetch_assoc();
 $stmt->close();
 
 $stmt = $conn->prepare(
-    'SELECT id, title, created_at, updated_at FROM blogPost
+    'SELECT id, title, created_at, updated_at FROM blogpost
      WHERE user_id = ? ORDER BY created_at DESC'
 );
 $stmt->bind_param('i', $userId);

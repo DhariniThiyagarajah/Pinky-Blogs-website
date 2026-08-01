@@ -30,7 +30,7 @@ if (mb_strlen($comment) > 500) {
 }
 
 ensureCommentsTable($conn);
-$stmt = $conn->prepare('INSERT INTO blogComment (blog_id, user_id, comment) VALUES (?, ?, ?)');
+$stmt = $conn->prepare('INSERT INTO blogcomment (blog_id, user_id, comment) VALUES (?, ?, ?)');
 $userId = (int) $_SESSION['user_id'];
 $stmt->bind_param('iis', $blogId, $userId, $comment);
 

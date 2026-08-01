@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pinky Blog</title>
+<link rel="stylesheet" href="css/cookies.css">
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Quicksand:wght@500;600;700&display=swap');
 
@@ -908,5 +909,7 @@
 
 </script>
 
+<?php require __DIR__ . '/includes/cookie_banner.php'; ?>
+<script src="js/cookies.js"></script>
 </body>
 </html>

@@ -50,7 +50,7 @@ function requireBlogOwnership(mysqli $conn, int $blogId): array
 
     $stmt = $conn->prepare(
         'SELECT b.*, u.username
-         FROM blogPost b
+         FROM blogpost b
          JOIN user u ON b.user_id = u.id
          WHERE b.id = ?'
     );

@@ -22,6 +22,7 @@ $isHome = $currentPage === 'index.php';
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=VT323&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css?v=<?= (int) filemtime(__DIR__ . '/../css/style.css') ?>">
 <link rel="stylesheet" href="css/pinky-theme.css?v=<?= (int) filemtime(__DIR__ . '/../css/pinky-theme.css') ?>">
+<link rel="stylesheet" href="css/cookies.css?v=<?= (int) filemtime(__DIR__ . '/../css/cookies.css') ?>">
 
 <?php if (in_array(basename($_SERVER['PHP_SELF']), ['profile.php', 'edit_profile.php'], true)): ?>
 <link rel="stylesheet" href="css/profile.css?v=<?= (int) filemtime(__DIR__ . '/../css/profile.css') ?>">

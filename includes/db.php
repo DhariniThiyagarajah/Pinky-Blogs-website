@@ -1,17 +1,41 @@
 <?php
-/**
- * db.php - Database connection handler
- *
- * Establishes a mysqli connection to the anime_journal database.
- * Include this file wherever database access is needed.
- */
+/** Database connection for local XAMPP and the live InfinityFree website. */
 
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('DB_NAME', 'anime_journal');
+$requestHost = strtolower((string) ($_SERVER['HTTP_HOST'] ?? 'localhost'));
+$isLocalDatabase = PHP_SAPI === 'cli'
+    || $requestHost === 'localhost'
+    || strpos($requestHost, 'localhost:') === 0
+    || $requestHost === '127.0.0.1'
+    || strpos($requestHost, '127.0.0.1:') === 0;
 
-$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+if ($isLocalDatabase) {
+    $databaseConfig = [
+        'host' => 'localhost',
+        'username' => 'root',
+        'password' => '',
+        'database' => 'anime_journal',
+        'port' => 3306,
+    ];
+} else {
+    $databaseConfig = require __DIR__ . '/db.infinityfree.php';
+
+    if (($databaseConfig['password'] ?? '') === 'PASTE_YOUR_MYSQL_PASSWORD_HERE') {
+        die('The live database password has not been configured yet.');
+    }
+}
+
+try {
+    $conn = new mysqli(
+        $databaseConfig['host'],
+        $databaseConfig['username'],
+        $databaseConfig['password'],
+        $databaseConfig['database'],
+        (int) ($databaseConfig['port'] ?? 3306)
+    );
+} catch (mysqli_sql_exception $exception) {
+    error_log('Pinky Blog database error: ' . $exception->getMessage());
+    die('Database connection failed (code ' . (int) $exception->getCode() . ').');
+}
 
 if ($conn->connect_error) {
     die('Database connection failed. Please check your configuration.');

@@ -42,6 +42,7 @@ if(isset($_POST['login'])){
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>welcome back, doll ✧</title>
+    <link rel="stylesheet" href="css/cookies.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap');
 
@@ -435,5 +436,7 @@ if(isset($_POST['login'])){
             field.appendChild(el);
         }
     </script>
+    <?php require __DIR__ . '/includes/cookie_banner.php'; ?>
+    <script src="js/cookies.js"></script>
 </body>
 </html>

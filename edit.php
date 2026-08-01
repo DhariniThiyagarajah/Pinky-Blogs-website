@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($errors)) {
         $stmt = $conn->prepare(
-            'UPDATE blogPost SET title = ?, content = ?, thumbnail = ? WHERE id = ? AND user_id = ?'
+            'UPDATE blogpost SET title = ?, content = ?, thumbnail = ? WHERE id = ? AND user_id = ?'
         );
         $userId = (int) $_SESSION['user_id'];
         $stmt->bind_param('sssii', $title, $content, $thumbnail, $blogId, $userId);

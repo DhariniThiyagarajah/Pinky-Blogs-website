@@ -24,6 +24,7 @@ button,a{font:inherit}.game-shell{width:min(1320px,100%);margin:auto;overflow:hi
 @media(max-width:900px){body{padding:8px}.game-stage{grid-template-columns:1fr}.cafe{min-height:660px;border-right:0;border-bottom:3px solid var(--gray)}.panel{min-height:auto}.customers{gap:8px}.customer{grid-template-rows:140px auto}}
 @media(max-width:580px){.hud{grid-template-columns:repeat(3,1fr)}.stat:nth-child(4),.stat:nth-child(5){display:none}.customers{grid-template-columns:repeat(3,minmax(105px,1fr));overflow-x:auto}.customer{grid-template-rows:115px auto}.recipe{font-size:1rem}.speech{display:none}.cafe{padding:12px;min-height:590px}.counter{left:12px;right:12px;bottom:12px}.counter-top{align-items:stretch;flex-direction:column}.ingredients{grid-template-columns:repeat(3,1fr)}.how{grid-template-columns:1fr}.titlebar{font-size:.75rem}}
 </style>
+<link rel="stylesheet" href="css/cookies.css">
 </head>
 <body>
 <main class="game-shell">
@@ -74,5 +75,6 @@ $('clearBtn').onclick=()=>{state.tray=[];renderTray()};$('serveBtn').onclick=()=
 $('pauseBtn').onclick=()=>{if(!state.running)return;state.paused=!state.paused;$('pauseBtn').textContent=state.paused?'Resume':'Pause';toast(state.paused?'Shift paused':'Back to work!')};$('startBtn').onclick=()=>{$('startOverlay').classList.add('hidden');reset()};$('restartBtn').onclick=()=>{$('endOverlay').classList.add('hidden');reset()};
 render();
 </script>
+<script src="js/cookies.js"></script>
 </body>
 </html>

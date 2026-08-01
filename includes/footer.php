@@ -5,6 +5,8 @@
             <p class="footer-note">Reviews &middot; Characters &middot; Theories &middot; Memories</p>
         </div>
     </footer>
+    <?php require __DIR__ . '/cookie_banner.php'; ?>
     <script src="js/script.js"></script>
+    <script src="js/cookies.js"></script>
 </body>
 </html>
