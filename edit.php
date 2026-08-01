@@ -14,7 +14,7 @@ require_once __DIR__ . '/includes/blog_image.php';
 $blogId = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 
 if ($blogId <= 0) {
-    header('Location: dashboard.php');
+    header('Location: profile.php');
     exit;
 }
 
@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($stmt->execute() && $stmt->affected_rows >= 0) {
             $stmt->close();
-            header('Location: dashboard.php?updated=1');
+            header('Location: profile.php?updated=1');
             exit;
         }
 
@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
-<div class="inner-layout">
+<div class="inner-layout create-blog-page edit-blog-page">
     <div class="inner-main">
         <div class="kawaii-box form-container-wide" style="margin: 0 auto;">
             <div class="box-cap">&#9998; edit entry</div>
@@ -92,6 +92,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <div class="form-group">
                     <label for="thumbnail">Replace Blog Thumbnail</label>
+                    <?php if ($currentThumbnail = blogThumbnailUrl($blog['thumbnail'] ?? null)): ?>
+                        <div class="current-thumbnail"><img src="<?= e($currentThumbnail) ?>" alt="Current thumbnail for <?= e($blog['title']) ?>"><span>Current thumbnail</span></div>
+                    <?php endif; ?>
                     <input type="file" id="thumbnail" name="thumbnail" accept="image/png,image/jpeg,image/webp" data-resize-thumbnail>
                     <small>Optional. The image will be center-cropped to 960 × 600.</small>
                 </div>
@@ -105,15 +108,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <div class="btn-group">
                     <button type="submit" class="btn btn-primary">Save Changes</button>
-                    <a href="dashboard.php" class="btn btn-secondary">Cancel</a>
+                    <a href="profile.php" class="btn btn-secondary">Cancel</a>
                 </div>
             </form>
         </div>
     </div>
-    <?php
-    $totalPosts = 0;
-    require_once __DIR__ . '/includes/sidebar.php';
-    ?>
 </div>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

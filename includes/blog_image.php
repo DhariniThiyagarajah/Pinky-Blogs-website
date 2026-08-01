@@ -1,5 +1,18 @@
 <?php
 
+/** Return a safe public URL for a stored blog thumbnail. */
+function blogThumbnailUrl(?string $filename): ?string
+{
+    if (!$filename) return null;
+
+    $safeName = basename($filename);
+    $path = __DIR__ . '/../assests/blog-thumbnails/' . $safeName;
+
+    return is_file($path)
+        ? 'assests/blog-thumbnails/' . rawurlencode($safeName) . '?v=' . filemtime($path)
+        : null;
+}
+
 function saveBlogThumbnail(array $file, array &$errors): ?string
 {
     if (($file['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) return null;
@@ -20,6 +33,14 @@ function saveBlogThumbnail(array $file, array &$errors): ?string
     }
 
     $uploadDir = __DIR__ . '/../assests/blog-thumbnails/';
+    if (!is_dir($uploadDir) && !mkdir($uploadDir, 0775, true)) {
+        $errors[] = 'The thumbnail folder could not be created.';
+        return null;
+    }
+    if (!is_writable($uploadDir)) {
+        $errors[] = 'The thumbnail folder is not writable.';
+        return null;
+    }
     $filename = 'blog-' . (int) $_SESSION['user_id'] . '-' . bin2hex(random_bytes(8)) . '.jpg';
     $destination = $uploadDir . $filename;
 

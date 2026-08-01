@@ -108,3 +108,39 @@ body:has(.neo-blog-shell) .pinky-nav { background: rgba(250, 232, 241, .94); bor
 .neo-warning-widget { border-color: #d85d9d; }
 .neo-warning-widget .neo-titlebar { background: linear-gradient(90deg, #c84e88, #df7baa); }
 .neo-chat-message, .neo-chat-loading, .neo-chat-login { background: #f7e2ed; border-color: #d99aba; }
+
+/* Replace the remaining grey-blue accents with the Pinky Blog palette. */
+.neo-blog-hero { border-color: #d56d9f; }
+.neo-statusbar { color: #6d4d63; background: #f7e2ed; border-top-color: #d56d9f; }
+.neo-statusbar span:first-child { color: #d85d9d; }
+.neo-mini-stats span { color: #5b476d; background: #ffe5f1; border: 2px solid #d99aba; box-shadow: 3px 3px 0 #f3b4d2; }
+.neo-mini-stats strong { color: #b94d84; }
+
+
+/* Polished card grid for the main blog feed. */
+.blog-card-feed { height: min(900px,calc(100vh - 32px)); padding: 24px; background: #fff9f2; border: 3px solid #d56d9f; border-radius: 20px; box-shadow: 8px 9px 0 rgba(185,87,140,.18); }
+.blog-card-feed > .neo-titlebar { display: none; }
+.blog-card-heading { flex: 0 0 auto; display: flex; align-items: end; justify-content: space-between; gap: 18px; padding: 0 0 15px; border-bottom: 2px dashed #d99aba; }
+.blog-card-heading p { margin: 0; color: #b9578c; font-size: .72rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+.blog-card-heading h2 { margin: 2px 0 0; color: #4a3f66; font: 800 clamp(1.65rem,3vw,2.25rem) 'Quicksand',sans-serif; }
+.blog-card-heading a { flex: 0 0 auto; padding: 9px 16px; color: #fff!important; background: #b9578c; border: 2px solid #8f446d; border-radius: 999px; font-size: .8rem; font-weight: 800; }
+.blog-card-heading a:hover { background: #9f4275; }
+.blog-card-feed .neo-feed-inner { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 16px; padding: 20px 6px 8px 0; background: transparent; }
+.blog-card-feed .neo-post { overflow: hidden; display: flex; flex-direction: column; min-width: 0; min-height: 440px; background: #fffdf7; border: 2px solid #d99aba; border-radius: 15px; box-shadow: 4px 5px 0 #f3b4d2; transition: transform .2s ease,box-shadow .2s ease; }
+.blog-card-feed .neo-post:hover { transform: translateY(-4px); box-shadow: 6px 8px 0 #eca8c8; }
+.blog-card-feed .neo-post-number { display: none; }
+.blog-card-feed .neo-post:not(.has-thumbnail)::before { content: '♡ ✦ ♡'; height: 115px; display: grid; place-items: center; color: #b9578c; background: radial-gradient(circle,rgba(255,255,255,.9) 1.5px,transparent 1.5px),linear-gradient(135deg,#f5bfd5,#ffe5f1); background-size: 18px 18px,auto; font-size: 1.6rem; }
+.blog-card-feed .neo-post-body,.blog-card-feed .neo-post.has-thumbnail .neo-post-body { height: auto; min-height: 0; display: flex; flex: 1; flex-direction: column; grid-template-columns: none; }
+.blog-card-feed .neo-post-thumb { height: 175px; flex: 0 0 175px; margin: 0; border: 0; border-bottom: 2px solid #d99aba; outline: 0; border-radius: 0; box-shadow: none; }
+.blog-card-feed .neo-post-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.blog-card-feed .neo-post-copy { align-self: stretch; display: flex; flex: 1; flex-direction: column; padding: 16px 18px 18px; }
+.blog-card-feed .neo-post-meta { display: block; margin: 0 0 8px; color: #9b6c84; font-size: .7rem; }
+.blog-card-feed .neo-post-meta span::after { content: ' · '; }
+.blog-card-feed .neo-post-copy h2 { font-size: 1.08rem; line-height: 1.3; }
+.blog-card-feed .neo-post-copy h2 a { color: #4a3f66; }
+.blog-card-feed .neo-post-copy p { margin-top: 9px; color: #6d5969; font-size: .82rem; line-height: 1.55; }
+.blog-card-feed .neo-read-more { align-self: flex-start; margin-top: auto; padding: 14px 0 0; color: #b9578c!important; background: transparent; border: 0; font-size: .78rem; text-transform: none; }
+.blog-card-feed .neo-read-more:hover { color: #8f446d!important; background: transparent; }
+@media(max-width:1200px){.blog-card-feed .neo-feed-inner{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:850px){.blog-card-feed{height:auto;position:relative;top:auto}.blog-card-feed .neo-feed-inner{overflow:visible}}
+@media(max-width:600px){.blog-card-feed{padding:18px 13px}.blog-card-heading{align-items:flex-start;flex-direction:column}.blog-card-feed .neo-feed-inner{grid-template-columns:1fr}.blog-card-feed .neo-post{min-height:400px}.blog-card-feed .neo-post-thumb{height:190px;flex-basis:190px}}

@@ -43,7 +43,11 @@ if (empty($_SESSION['chat_csrf'])) {
     </header>
 
     <div class="neo-blog-layout">
-        <main class="neo-feed neo-window">
+        <main class="neo-feed neo-window blog-card-feed">
+            <div class="blog-card-heading">
+                <div><p>Fresh from the community</p><h2>Latest Blogs</h2></div>
+                <?php if (isLoggedIn()): ?><a href="create.php">Write a blog</a><?php else: ?><a href="login.php">Log in to write</a><?php endif; ?>
+            </div>
             <div class="neo-titlebar"><span>♡ LATEST POSTS</span><span>scroll to browse ↓</span></div>
             <div class="neo-feed-inner">
                 <?php if (!$blogs): ?>

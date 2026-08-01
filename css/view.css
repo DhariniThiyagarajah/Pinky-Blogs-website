@@ -111,6 +111,8 @@ body:has(.blog-view) .blog-view {
 body:has(.blog-view) .blog-view h1 { color: #3a3450; text-shadow: 2px 2px 0 #d99aba; }
 body:has(.blog-view) .blog-view .meta { color: #7a6f95; border-bottom-color: #d85d9d; }
 body:has(.blog-view) .blog-view .content { color: #3a3450; }
+.blog-view-thumbnail { width: min(760px,100%); margin: 24px auto 28px; padding: 8px; background: #fff9f2; border: 2px solid #d85d9d; border-radius: 16px; box-shadow: 5px 6px 0 #d99aba; }
+.blog-view-thumbnail img { width: 100%; aspect-ratio: 8/5; display: block; object-fit: cover; border-radius: 10px; }
 
 body:has(.blog-view) .btn { border-color: #bf4e89; }
 body:has(.blog-view) .btn-primary { color: #fff; background: #d85d9d; }

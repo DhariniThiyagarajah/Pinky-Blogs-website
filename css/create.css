@@ -60,6 +60,9 @@ body:has(.create-blog-page) input[type="file"]::file-selector-button {
     color: #fff; background: #d85d9d;
     border: 0; border-radius: 8px; cursor: pointer;
 }
+.current-thumbnail { position: relative; width: min(360px,100%); margin: 4px 0 12px; padding: 7px; background: #fff9f2; border: 2px solid #d99aba; border-radius: 13px; box-shadow: 4px 4px 0 #edbfd4; }
+.current-thumbnail img { width: 100%; aspect-ratio: 8/5; display: block; object-fit: cover; border-radius: 8px; }
+.current-thumbnail span { position: absolute; right: 13px; bottom: 13px; padding: 5px 9px; color: #fff; background: rgba(185,77,132,.9); border-radius: 999px; font-size: .7rem; font-weight: 800; }
 
 body:has(.create-blog-page) .btn { border-color: #bf4e89; }
 body:has(.create-blog-page) .btn-primary { color: #fff; background: #d85d9d; box-shadow: 0 6px 14px rgba(58,52,80,.15); }

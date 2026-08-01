@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($stmt->execute()) {
             $stmt->close();
-            header('Location: dashboard.php?created=1');
+            header('Location: profile.php?created=1');
             exit;
         }
 
@@ -117,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <div class="btn-group">
                     <button type="submit" class="btn btn-primary">Publish Blog</button>
-                    <a href="dashboard.php" class="btn btn-secondary">Cancel</a>
+                    <a href="profile.php" class="btn btn-secondary">Cancel</a>
                 </div>
             </form>
         </div>

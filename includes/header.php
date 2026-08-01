@@ -32,7 +32,7 @@ $isHome = $currentPage === 'index.php';
 <?php if (basename($_SERVER['PHP_SELF']) === 'view.php'): ?>
 <link rel="stylesheet" href="css/view.css?v=<?= (int) filemtime(__DIR__ . '/../css/view.css') ?>">
 <?php endif; ?>
-<?php if (basename($_SERVER['PHP_SELF']) === 'create.php'): ?>
+<?php if (in_array(basename($_SERVER['PHP_SELF']), ['create.php', 'edit.php'], true)): ?>
 <link rel="stylesheet" href="css/create.css?v=<?= (int) filemtime(__DIR__ . '/../css/create.css') ?>">
 <?php endif; ?>
 <?php if (basename($_SERVER['PHP_SELF']) === 'aboutme.php'): ?>

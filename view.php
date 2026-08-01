@@ -10,6 +10,7 @@ $pageTitle = 'View Blog';
 require_once __DIR__ . '/includes/db.php';
 require_once __DIR__ . '/includes/header.php';
 require_once __DIR__ . '/includes/comments.php';
+require_once __DIR__ . '/includes/blog_image.php';
 
 $blogId = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 
@@ -19,7 +20,7 @@ if ($blogId <= 0) {
 }
 
 $stmt = $conn->prepare(
-    'SELECT b.id, b.title, b.content, b.created_at, b.updated_at, b.user_id, u.username
+    'SELECT b.id, b.title, b.content, b.thumbnail, b.created_at, b.updated_at, b.user_id, u.username
      FROM blogPost b
      JOIN user u ON b.user_id = u.id
      WHERE b.id = ?'
@@ -64,6 +65,12 @@ $stmt->close();
                     <span>&#128260; Updated <?= e(formatDate($blog['updated_at'])) ?></span>
                 <?php endif; ?>
             </div>
+
+            <?php if ($viewThumbnail = blogThumbnailUrl($blog['thumbnail'])): ?>
+                <figure class="blog-view-thumbnail">
+                    <img src="<?= e($viewThumbnail) ?>" alt="Thumbnail for <?= e($blog['title']) ?>">
+                </figure>
+            <?php endif; ?>
 
             <div class="content"><?= e($blog['content']) ?></div>
 
