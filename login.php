@@ -47,25 +47,25 @@ if(isset($_POST['login'])){
         @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap');
 
         :root {
-            --bg-top: #cfeaff;
-            --bg-bottom: #ffd6ef;
+            --bg-top: #fffafd;
+            --bg-bottom: #ffedf7;
             --font-display: 'Baloo 2', sans-serif;
             --font-body: 'Quicksand', sans-serif;
 
-            --theme-color: #b9c4d0;
-            --theme-glow-rgb: 185, 196, 208;
-            --shade-color: #dfe4ea;
-            --bulb-color: #f4f1ee;
+            --theme-color: #d56d9f;
+            --theme-glow-rgb: 213, 109, 159;
+            --shade-color: #f6c6dc;
+            --bulb-color: #fff0fa;
             --light-opacity: 0;
-            --btn-text-color: #8b8f9a;
-            --btn-bg: #e3e7ec;
-            --ribbon-color: #d8dde3;
+            --btn-text-color: #ffffff;
+            --btn-bg: #b9578c;
+            --ribbon-color: #ed8fbd;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            background: radial-gradient(circle at 20% 15%, #ffffff 0%, transparent 45%),
+            background: radial-gradient(circle at 20% 15%, rgba(255,255,255,.88) 0%, transparent 43%),
                         radial-gradient(circle at 85% 80%, #fff0fa 0%, transparent 40%),
                         linear-gradient(160deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
             color: #3a3450;
@@ -114,7 +114,7 @@ if(isset($_POST['login'])){
             font-size: 1.9rem;
             letter-spacing: 0.5px;
             margin-bottom: 0.75rem;
-            background: linear-gradient(90deg, #ff8fd0, #8fc9ff, #ffd98f, #ff8fd0);
+            background: linear-gradient(90deg, #b9578c, #ff8fd0, #d56d9f, #b9578c);
             background-size: 300% auto;
             -webkit-background-clip: text;
             background-clip: text;
@@ -177,7 +177,7 @@ if(isset($_POST['login'])){
 
         .login-card {
             width: 100%; max-width: 400px;
-            background: rgba(255, 255, 255, 0.55); backdrop-filter: blur(14px);
+            background: rgba(255, 252, 250, 0.9); backdrop-filter: blur(14px);
             padding: 2.75rem 2.5rem; border-radius: 28px;
             border: 2.5px dashed rgba(255, 255, 255, 0.9);
             box-shadow: 0 0 0 1px rgba(var(--theme-glow-rgb), 0.25) inset,
@@ -216,12 +216,22 @@ if(isset($_POST['login'])){
         }
 
         .input-group input {
-            background: rgba(255,255,255,0.75); border: 1.5px solid #ecd9f0;
+            background: #fffafd; border: 1.5px solid #f3b4d2;
             padding: 0.95rem 1.15rem; border-radius: 16px; color: #4a3f66; outline: none;
             font-family: var(--font-body); font-weight: 500;
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
         .input-group input::placeholder { color: #b8aecb; }
+        .input-group input:-webkit-autofill,
+        .input-group input:-webkit-autofill:hover,
+        .input-group input:-webkit-autofill:focus,
+        .input-group input:-webkit-autofill:active {
+            -webkit-text-fill-color: #4a3f66;
+            caret-color: #4a3f66;
+            -webkit-box-shadow: 0 0 0 1000px #fffafd inset;
+            box-shadow: 0 0 0 1000px #fffafd inset;
+            transition: background-color 9999s ease-out 0s;
+        }
         .input-group input:focus {
             border-color: rgba(var(--theme-glow-rgb), 0.9);
             box-shadow: 0 0 0 4px rgba(var(--theme-glow-rgb), 0.18);
@@ -265,6 +275,13 @@ if(isset($_POST['login'])){
         .register-prompt a { color: var(--theme-color); font-weight: 800; text-decoration: none; transition: color .4s ease; }
         .register-prompt a:hover { color: #4a3f66; text-decoration: underline; }
 
+        .oauth-divider { display: flex; align-items: center; gap: .75rem; margin: 1.15rem 0 .8rem; color: #a58599; font-size: .72rem; font-weight: 700; }
+        .oauth-divider::before, .oauth-divider::after { content: ''; flex: 1; height: 1px; background: #f3c9dc; }
+        .oauth-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: .55rem; }
+        .oauth-button { display: flex; align-items: center; justify-content: center; gap: .35rem; min-height: 43px; padding: .55rem .35rem; color: #59445d; background: #fff; border: 1.5px solid #efb8d0; border-radius: 13px; box-shadow: 0 4px 10px rgba(185,87,140,.1); font-size: .72rem; font-weight: 700; text-decoration: none; transition: transform .2s ease, border-color .2s ease, background .2s ease; }
+        .oauth-button:hover { color: #b9578c; background: #fff5fa; border-color: #d56d9f; transform: translateY(-2px); }
+        .oauth-logo { width: 23px; height: 23px; display: block; object-fit: contain; border-radius: 6px; }
+
         @media (max-width: 768px) {
             .container { flex-direction: column; height: auto; }
             .lamp-svg { max-width: 240px; }
@@ -278,7 +295,7 @@ if(isset($_POST['login'])){
 
     <div class="container">
         <div class="lamp-section">
-            <div class="wordmark">Ghibli - Blog</div>
+            <div class="wordmark">Pinky Blog</div>
             <div class="tagline">✧ get ready ✧</div>
 
             <div class="lamp-ambient-glow"></div>
@@ -286,7 +303,7 @@ if(isset($_POST['login'])){
                 <defs>
                     <linearGradient id="lightConeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
                         <stop offset="0%" stop-color="#ffe9fb" stop-opacity="0.85" />
-                        <stop offset="100%" stop-color="#c9e8ff" stop-opacity="0" />
+                        <stop offset="100%" stop-color="#ffb6e6" stop-opacity="0" />
                     </linearGradient>
                     <clipPath id="mouthClip">
                         <path d="M 125 155 Q 150 190 175 155 Z" />
@@ -298,10 +315,10 @@ if(isset($_POST['login'])){
                 <!-- sparkle burst particles, revealed on turn-on -->
                 <g id="burstGroup">
                     <text class="burst-particle" x="150" y="170" style="--dx:-60px; --dy:-40px; font-size:18px;" fill="#ffb6e6">✧</text>
-                    <text class="burst-particle" x="150" y="170" style="--dx:60px; --dy:-30px; font-size:14px;" fill="#8fc9ff">✦</text>
+                    <text class="burst-particle" x="150" y="170" style="--dx:60px; --dy:-30px; font-size:14px;" fill="#d56d9f">✦</text>
                     <text class="burst-particle" x="150" y="170" style="--dx:-40px; --dy:20px; font-size:12px;" fill="#ffe08f">✧</text>
                     <text class="burst-particle" x="150" y="170" style="--dx:70px; --dy:30px; font-size:16px;" fill="#ffb6e6">✦</text>
-                    <text class="burst-particle" x="150" y="170" style="--dx:0px; --dy:-60px; font-size:13px;" fill="#c8b6ff">✧</text>
+                    <text class="burst-particle" x="150" y="170" style="--dx:0px; --dy:-60px; font-size:13px;" fill="#d56d9f">✧</text>
                 </g>
 
                 <ellipse cx="150" cy="410" rx="62" ry="15" fill="#e3d0e8" opacity="0.5" />
@@ -364,6 +381,12 @@ if(isset($_POST['login'])){
                     <div class="login-options"><a href="#" class="forgot-pass">Forgot password?</a></div>
                     <button type="submit" name="login" class="login-btn">log in ✧</button>
                 </form>
+                <div class="oauth-divider"><span>or continue with</span></div>
+                <div class="oauth-options" aria-label="Social login options">
+                    <a class="oauth-button" href="oauth.php?provider=google"><img class="oauth-logo" src="assests/images/google-logo.jpg" alt="">Google</a>
+                    <a class="oauth-button" href="oauth.php?provider=discord"><img class="oauth-logo" src="assests/images/discord-logo.jpg" alt="">Discord</a>
+                    <a class="oauth-button" href="oauth.php?provider=github"><img class="oauth-logo" src="assests/images/github-logo.jpg" alt="">GitHub</a>
+                </div>
                 <p class="register-prompt">Don't have an account? <a href="register.php">Register here</a></p>
             </div>
         </div>
@@ -371,10 +394,10 @@ if(isset($_POST['login'])){
 
     <script>
         const lampStates = [
-            { lamp: "OFF", themeColor: "#b9c4d0", themeGlowRGB: "185, 196, 208", shadeColor: "#dfe4ea", bulbColor: "#f4f1ee", lightOpacity: "0", btnBg: "#e3e7ec", btnText: "#8b8f9a", ribbon: "#d8dde3", faceAwakeOpacity: "0", faceSleepOpacity: "1" },
-            { lamp: "ON", themeColor: "#7ec8ff", themeGlowRGB: "126, 200, 255", shadeColor: "#bfe4ff", bulbColor: "#eaf7ff", lightOpacity: "0.55", btnBg: "#7ec8ff", btnText: "#fff", ribbon: "#9fd6ff", faceAwakeOpacity: "1", faceSleepOpacity: "0" },
-            { lamp: "OFF", themeColor: "#b9c4d0", themeGlowRGB: "185, 196, 208", shadeColor: "#dfe4ea", bulbColor: "#f4f1ee", lightOpacity: "0", btnBg: "#e3e7ec", btnText: "#8b8f9a", ribbon: "#d8dde3", faceAwakeOpacity: "0", faceSleepOpacity: "1" },
-            { lamp: "ON", themeColor: "#ff8fd0", themeGlowRGB: "255, 143, 208", shadeColor: "#ffd3ee", bulbColor: "#fff0fa", lightOpacity: "0.55", btnBg: "#ff8fd0", btnText: "#fff", ribbon: "#ffb6e6", faceAwakeOpacity: "1", faceSleepOpacity: "0" }
+            { lamp: "OFF", themeColor: "#d56d9f", themeGlowRGB: "213, 109, 159", shadeColor: "#f6c6dc", bulbColor: "#fff0fa", lightOpacity: "0", btnBg: "#b9578c", btnText: "#fff", ribbon: "#ed8fbd", faceAwakeOpacity: "0", faceSleepOpacity: "1" },
+            { lamp: "ON", themeColor: "#ff8fd0", themeGlowRGB: "255, 143, 208", shadeColor: "#ffc3e8", bulbColor: "#fff8fd", lightOpacity: "0.55", btnBg: "#d56d9f", btnText: "#fff", ribbon: "#ffb6e6", faceAwakeOpacity: "1", faceSleepOpacity: "0" },
+            { lamp: "OFF", themeColor: "#d56d9f", themeGlowRGB: "213, 109, 159", shadeColor: "#f6c6dc", bulbColor: "#fff0fa", lightOpacity: "0", btnBg: "#b9578c", btnText: "#fff", ribbon: "#ed8fbd", faceAwakeOpacity: "0", faceSleepOpacity: "1" },
+            { lamp: "ON", themeColor: "#ff8fd0", themeGlowRGB: "255, 143, 208", shadeColor: "#ffc3e8", bulbColor: "#fff8fd", lightOpacity: "0.55", btnBg: "#d56d9f", btnText: "#fff", ribbon: "#ffb6e6", faceAwakeOpacity: "1", faceSleepOpacity: "0" }
         ];
 
         let currentStateIndex = 0;

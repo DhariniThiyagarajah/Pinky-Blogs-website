@@ -1,5 +1,5 @@
 <?php
-/** Database connection for local XAMPP and the live InfinityFree website. */
+/** Database connection for local XAMPP and supported live hosts. */
 
 $requestHost = strtolower((string) ($_SERVER['HTTP_HOST'] ?? 'localhost'));
 $isLocalDatabase = PHP_SAPI === 'cli'
@@ -8,6 +8,16 @@ $isLocalDatabase = PHP_SAPI === 'cli'
     || $requestHost === '127.0.0.1'
     || strpos($requestHost, '127.0.0.1:') === 0;
 
+$wasmerHost = getenv('DB_HOST');
+$wasmerPort = getenv('DB_PORT');
+$wasmerName = getenv('DB_NAME');
+$wasmerUser = getenv('DB_USERNAME') ?: getenv('DB_USER');
+$wasmerPassword = getenv('DB_PASSWORD');
+$hasWasmerDatabase = $wasmerHost !== false
+    && $wasmerName !== false
+    && $wasmerUser !== false
+    && $wasmerPassword !== false;
+
 if ($isLocalDatabase) {
     $databaseConfig = [
         'host' => 'localhost',
@@ -15,6 +25,15 @@ if ($isLocalDatabase) {
         'password' => '',
         'database' => 'anime_journal',
         'port' => 3306,
+    ];
+} elseif ($hasWasmerDatabase) {
+    // Wasmer injects these values into the running app automatically.
+    $databaseConfig = [
+        'host' => $wasmerHost,
+        'username' => $wasmerUser,
+        'password' => $wasmerPassword,
+        'database' => $wasmerName,
+        'port' => $wasmerPort !== false ? (int) $wasmerPort : 3306,
     ];
 } else {
     $databaseConfig = require __DIR__ . '/db.infinityfree.php';
