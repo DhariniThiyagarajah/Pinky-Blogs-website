@@ -1,5 +1,7 @@
 <?php
-/** Database connection for local XAMPP and supported live hosts. */
+/** Database connection using private environment variables. */
+
+require_once __DIR__ . '/bootstrap.php';
 
 $requestHost = strtolower((string) ($_SERVER['HTTP_HOST'] ?? 'localhost'));
 $isLocalDatabase = PHP_SAPI === 'cli'
@@ -8,15 +10,15 @@ $isLocalDatabase = PHP_SAPI === 'cli'
     || $requestHost === '127.0.0.1'
     || strpos($requestHost, '127.0.0.1:') === 0;
 
-$wasmerHost = getenv('DB_HOST');
-$wasmerPort = getenv('DB_PORT');
-$wasmerName = getenv('DB_NAME');
-$wasmerUser = getenv('DB_USERNAME') ?: getenv('DB_USER');
-$wasmerPassword = getenv('DB_PASSWORD');
-$hasWasmerDatabase = $wasmerHost !== false
-    && $wasmerName !== false
-    && $wasmerUser !== false
-    && $wasmerPassword !== false;
+$environmentHost = environmentValue('DB_HOST');
+$environmentPort = environmentValue('DB_PORT');
+$environmentName = environmentValue('DB_NAME');
+$environmentUser = environmentValue('DB_USERNAME') ?: environmentValue('DB_USER');
+$environmentPassword = environmentValue('DB_PASSWORD');
+$hasEnvironmentDatabase = $environmentHost !== false
+    && $environmentName !== false
+    && $environmentUser !== false
+    && $environmentPassword !== false;
 
 if ($isLocalDatabase) {
     $databaseConfig = [
@@ -26,21 +28,17 @@ if ($isLocalDatabase) {
         'database' => 'anime_journal',
         'port' => 3306,
     ];
-} elseif ($hasWasmerDatabase) {
-    // Wasmer injects these values into the running app automatically.
+} elseif ($hasEnvironmentDatabase) {
     $databaseConfig = [
-        'host' => $wasmerHost,
-        'username' => $wasmerUser,
-        'password' => $wasmerPassword,
-        'database' => $wasmerName,
-        'port' => $wasmerPort !== false ? (int) $wasmerPort : 3306,
+        'host' => $environmentHost,
+        'username' => $environmentUser,
+        'password' => $environmentPassword,
+        'database' => $environmentName,
+        'port' => $environmentPort !== false ? (int) $environmentPort : 3306,
     ];
 } else {
-    $databaseConfig = require __DIR__ . '/db.infinityfree.php';
-
-    if (($databaseConfig['password'] ?? '') === 'PASTE_YOUR_MYSQL_PASSWORD_HERE') {
-        die('The live database password has not been configured yet.');
-    }
+    error_log('Pinky Blog database environment variables are missing.');
+    die('Database configuration is unavailable.');
 }
 
 try {

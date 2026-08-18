@@ -1,0 +1,38 @@
+/* Registration page using the same warm pink palette as the home page. */
+body:has(.register-page) {
+    background-color: #f9d4e5;
+    background-image:
+        radial-gradient(circle, rgba(255,255,255,.78) 1.5px, transparent 1.5px),
+        linear-gradient(135deg, #edc9dc, #f5d3e3 48%, #e8b7d0);
+    background-size: 22px 22px, auto;
+}
+.register-page { grid-template-columns: minmax(0, 1fr); max-width: 980px; margin: 22px auto 60px; }
+.register-page .kawaii-sidebar { display: none; }
+.register-card { position: relative; max-width: 900px; margin: 0 auto; overflow: hidden; display: grid; grid-template-columns: .8fr 1.2fr; grid-template-areas: 'cap cap' 'welcome form'; color: #4a3f66; background: rgba(255,249,242,.98); border: 4px solid #fff; outline: 3px solid #d56d9f; border-radius: 24px; box-shadow: 13px 15px 0 rgba(185,87,140,.2), 0 24px 55px rgba(74,63,102,.16); }
+.register-card .box-cap { color: #fff; background: linear-gradient(90deg, #b9578c, #d56d9f 55%, #ed8fbd); border-bottom: 2px solid #8f446d; }
+.register-card .box-cap { grid-area: cap; padding: 12px 18px; text-align: left; letter-spacing: .08em; text-transform: uppercase; }
+.register-card .page-header { grid-area: welcome; position: relative; min-height: 560px; display: flex; justify-content: center; flex-direction: column; padding: 50px 38px; text-align: left!important; background: radial-gradient(circle at 28% 20%,rgba(255,255,255,.95) 0 5%,transparent 5.5%), radial-gradient(circle at 78% 72%,rgba(255,255,255,.75) 0 3%,transparent 3.5%), linear-gradient(155deg,#f3b4d2,#ffddea 52%,#e4b5d3); border-right: 2px dashed #d56d9f; }
+.register-card .page-header::before { content: '♡'; width: 92px; height: 92px; display: grid; place-items: center; margin-bottom: 24px; color: #fff; background: linear-gradient(145deg,#d56d9f,#b9578c); border: 6px solid rgba(255,255,255,.8); border-radius: 48% 52% 50% 50%; box-shadow: 7px 8px 0 rgba(143,68,109,.2); font-size: 3.1rem; transform: rotate(-5deg); }
+.register-card .page-header::after { content: '♡  ✦  ♡'; position: absolute; right: 20px; bottom: 20px; color: rgba(185,87,140,.55); font-size: 1.5rem; letter-spacing: .2em; }
+.register-card .page-header h1 { margin: 0 0 12px; color: #4a3f66; font-size: clamp(2rem,4vw,3rem); line-height: 1.05; }
+.register-card .page-header p { color: #694c61; line-height: 1.7; }
+.register-card form { grid-area: form; align-self: center; padding: 42px 44px; background-color: #fff9f2; background-image: radial-gradient(circle,rgba(213,109,159,.13) 1px,transparent 1px); background-size: 17px 17px; }
+.register-card .form-group label { color: #694c61; font-weight: 800; }
+.register-card .form-group { margin-bottom: 18px; }
+.register-card .form-group input { width: 100%; min-height: 52px; padding: 13px 15px; color: #4a3f66; background: rgba(255,247,251,.96); border: 2px solid #e4abc8; border-radius: 14px; box-shadow: inset 0 2px 0 rgba(213,109,159,.07); }
+.register-card .form-group input:focus { outline: 3px solid rgba(213,109,159,.18); border-color: #d56d9f; }
+.register-card .field-hint { color: #8c7183; }
+.register-card .btn-primary { min-height: 52px; color: #fff; background: linear-gradient(135deg, #d56d9f, #b9578c); border: 2px solid #8f446d; border-radius: 999px; box-shadow: 0 6px 15px rgba(185,87,140,.25); font-weight: 900; letter-spacing: .03em; }
+.register-card .btn-primary:hover { background: linear-gradient(135deg, #c75690, #9f4275); }
+.register-card .form-footer { color: #765b72; }
+.register-card .form-footer a { color: #b94d84; font-weight: 800; }
+.register-card .alert-error { color: #8e3e56; background: #ffe6ee; border-color: #d56d9f; }
+body:has(.register-page) .pinky-nav a.active { color: #fff; background: #d56d9f; border-color: #b9578c; }
+@media (max-width: 600px) {
+    .register-page { width: 100%; margin-top: 8px; }
+    .register-card { width: 100%; display: block; border-radius: 16px; box-shadow: 5px 6px 0 rgba(185,87,140,.18); }
+    .register-card .page-header { min-height: 260px; padding: 30px 22px; border-right: 0; border-bottom: 2px dashed #d56d9f; }
+    .register-card .page-header::before { width: 68px; height: 68px; margin-bottom: 18px; font-size: 2.25rem; }
+    .register-card .page-header::after { right: 12px; bottom: 12px; font-size: 1rem; }
+    .register-card form { padding: 26px 18px 28px; }
+}

@@ -1109,6 +1109,11 @@ grid-template-columns: 240px minmax(500px, 1fr) 220px;
 }
 
 @media (max-width: 480px) {
+    html, body { max-width: 100%; overflow-x: hidden; }
+    .main-content { width: 100%; padding-inline: 10px; }
+    .inner-main, .kawaii-box, .page-header, form { min-width: 0; }
+    input, textarea, select, button { max-width: 100%; }
+    .page-header h1 { overflow-wrap: anywhere; }
     .stamp-gallery { gap: 6px; }
     .stamp-badge { font-size: 0.75rem; padding: 3px 8px; }
     .btn-group { flex-direction: column; }

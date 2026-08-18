@@ -2,8 +2,7 @@
 /**
  * delete.php - Blog deletion handler
  *
- * Deletes a blog post only if it belongs to the logged-in user.
- * Ownership is verified before deletion.
+ * Blog owners may delete their own posts. Administrators may delete any post.
  */
 
 require_once __DIR__ . '/includes/db.php';
@@ -23,14 +22,12 @@ if ($blogId <= 0) {
     exit;
 }
 
-requireBlogOwnership($conn, $blogId);
+requireBlogDeleteAccess($conn, $blogId);
 
-$userId = (int) $_SESSION['user_id'];
-
-$stmt = $conn->prepare('DELETE FROM blogpost WHERE id = ? AND user_id = ?');
-$stmt->bind_param('ii', $blogId, $userId);
+$stmt = $conn->prepare('DELETE FROM blogpost WHERE id = ?');
+$stmt->bind_param('i', $blogId);
 $stmt->execute();
 $stmt->close();
 
-header('Location: profile.php?deleted=1');
+header('Location: ' . (isAdmin() ? 'blogs.php?deleted=1' : 'profile.php?deleted=1'));
 exit;

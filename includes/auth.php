@@ -6,9 +6,7 @@
  * and verify blog ownership before edit/delete operations.
  */
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+require_once __DIR__ . '/bootstrap.php';
 
 /**
  * Check if a user is currently logged in.
@@ -16,6 +14,19 @@ if (session_status() === PHP_SESSION_NONE) {
 function isLoggedIn(): bool
 {
     return isset($_SESSION['user_id']);
+}
+
+/** Check whether the signed-in account has administrator access. */
+function isAdmin(): bool
+{
+    return isLoggedIn() && ($_SESSION['role'] ?? 'user') === 'admin';
+}
+
+/** Check whether the signed-in user may delete a particular blog. */
+function canDeleteBlog(array $blog): bool
+{
+    return isLoggedIn()
+        && (isAdmin() || (int) $blog['user_id'] === (int) $_SESSION['user_id']);
 }
 
 /**
@@ -67,6 +78,27 @@ function requireBlogOwnership(mysqli $conn, int $blogId): array
 
     if ((int) $blog['user_id'] !== (int) $_SESSION['user_id']) {
         header('Location: profile.php');
+        exit;
+    }
+
+    return $blog;
+}
+
+/**
+ * Allow a blog owner or an administrator to delete the given blog.
+ */
+function requireBlogDeleteAccess(mysqli $conn, int $blogId): array
+{
+    requireLogin();
+
+    $stmt = $conn->prepare('SELECT id, user_id, thumbnail FROM blogpost WHERE id = ?');
+    $stmt->bind_param('i', $blogId);
+    $stmt->execute();
+    $blog = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+
+    if (!$blog || !canDeleteBlog($blog)) {
+        header('Location: blogs.php');
         exit;
     }
 

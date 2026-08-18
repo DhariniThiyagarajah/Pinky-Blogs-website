@@ -10,6 +10,8 @@ $pageTitle = 'Register';
 require_once __DIR__ . '/includes/db.php';
 require_once __DIR__ . '/includes/header.php';
 
+echo '<link rel="stylesheet" href="css/register.css">';
+
 redirectIfLoggedIn();
 
 $errors = [];
@@ -76,14 +78,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
-<div class="inner-layout">
+<div class="inner-layout register-page">
     <div class="inner-main">
-        <div class="kawaii-box" style="max-width: 560px; margin: 0 auto;">
+        <div class="kawaii-box register-card">
             <div class="box-cap">&#128150; join us</div>
 
             <div class="page-header" style="text-align: center;">
                 <h1>Create an Account</h1>
-                <p>Join Anime Journal and start writing about your favorite stories.</p>
+                <p>Make your own cozy corner, share your stories, and meet other Pinky Blog writers.</p>
             </div>
 
             <?php if (!empty($errors)): ?>

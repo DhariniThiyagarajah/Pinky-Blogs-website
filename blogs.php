@@ -92,7 +92,8 @@ if (empty($_SESSION['chat_csrf'])) {
                 <div class="neo-titlebar"><span>WRITERS.LOG</span><span>★</span></div>
                 <div class="neo-widget-content">
                     <?php if ($recentAuthors): ?>
-                        <ul class="neo-writer-list"><?php foreach (array_slice($recentAuthors, 0, 8) as $author): ?><li><span>♥</span> <?= e($author) ?></li><?php endforeach; ?></ul>
+                        <ul class="neo-writer-list" id="writerList" tabindex="0" aria-label="Blog writers"><?php foreach ($recentAuthors as $author): ?><li><span>♥</span> <?= e($author) ?></li><?php endforeach; ?></ul>
+                        <button class="neo-list-scroll" id="writerScrollButton" type="button" aria-controls="writerList">More writers ↓</button>
                     <?php else: ?><p>No writers online yet.</p><?php endif; ?>
                 </div>
             </section>
@@ -122,7 +123,7 @@ if (empty($_SESSION['chat_csrf'])) {
 
             <section class="neo-window neo-widget">
                 <div class="neo-titlebar"><span>CHAT.LOG</span><span>●</span></div>
-                <?php if ($gif = $widgetGif('chat.gif')): ?><img class="neo-widget-gif" src="<?= e($gif) ?>" alt="Chat decoration"><?php endif; ?>
+                <?php if ($gif = $widgetGif('hello-decoration.gif')): ?><img class="neo-widget-gif" src="<?= e($gif) ?>" alt="Chat decoration"><?php endif; ?>
                 <div class="neo-widget-content neo-chat-widget">
                     <div id="chatMessages" class="neo-chat-messages" aria-live="polite">
                         <p class="neo-chat-loading">Loading messages...</p>
@@ -219,7 +220,7 @@ if (empty($_SESSION['chat_csrf'])) {
     };
     const loadChat = async () => {
         try {
-            const response = await fetch('chat.php', { headers: { Accept: 'application/json' }, cache: 'no-store' });
+            const response = await fetch('messages.php', { headers: { Accept: 'application/json' }, cache: 'no-store' });
             if (!response.ok) throw new Error('Chat unavailable');
             const data = await response.json();
             renderMessages(data.messages || []);
@@ -231,7 +232,7 @@ if (empty($_SESSION['chat_csrf'])) {
         button.disabled = true;
         chatStatus.textContent = '';
         try {
-            const response = await fetch('chat.php', { method: 'POST', body: new FormData(chatForm), headers: { Accept: 'application/json' } });
+            const response = await fetch('messages.php', { method: 'POST', body: new FormData(chatForm), headers: { Accept: 'application/json' } });
             const data = await response.json();
             if (!response.ok) throw new Error(data.error || 'Message could not be sent.');
             chatForm.reset();
@@ -241,6 +242,14 @@ if (empty($_SESSION['chat_csrf'])) {
     });
     loadChat();
     window.setInterval(loadChat, 3000);
+
+    const writerList = document.getElementById('writerList');
+    const writerScrollButton = document.getElementById('writerScrollButton');
+    writerScrollButton?.addEventListener('click', () => {
+        const atBottom = writerList.scrollTop + writerList.clientHeight >= writerList.scrollHeight - 2;
+        writerList.scrollTo({ top: atBottom ? 0 : writerList.scrollTop + writerList.clientHeight, behavior: 'smooth' });
+        writerScrollButton.textContent = atBottom ? 'More writers ↓' : 'Continue ↓';
+    });
 })();
 </script>
 

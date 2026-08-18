@@ -1,14 +1,12 @@
 <?php
-session_start();
-
-include "includes/db.php";
+require_once __DIR__ . '/includes/db.php';
 
 if(isset($_POST['login'])){
 
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    $stmt = $conn->prepare('SELECT id, username, password FROM user WHERE email = ? LIMIT 1');
+    $stmt = $conn->prepare('SELECT id, username, password, role FROM user WHERE email = ? LIMIT 1');
     $stmt->bind_param('s', $email);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -19,8 +17,10 @@ if(isset($_POST['login'])){
 
         if(password_verify($password, $user['password'])){
 
+            session_regenerate_id(true);
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $user['username'];
+            $_SESSION['role'] = $user['role'] ?? 'user';
 
             header("Location: index.php");
             exit();
@@ -259,10 +259,6 @@ if(isset($_POST['login'])){
         .password-toggle:hover { color: #ff8fd0; background: #fff0fa; }
         .password-toggle svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; }
 
-        .login-options { display: flex; justify-content: flex-end; margin: -0.6rem 0 0.9rem; }
-        .forgot-pass { color: #ff8fd0; text-decoration: none; font-size: 0.8rem; font-weight: 600; }
-        .forgot-pass:hover { color: #4a3f66; text-decoration: underline; }
-
         .register-prompt {
             margin-top: 1.4rem; padding: 0.85rem 1rem; text-align: center;
             color: #4a3f66;
@@ -274,13 +270,6 @@ if(isset($_POST['login'])){
         }
         .register-prompt a { color: var(--theme-color); font-weight: 800; text-decoration: none; transition: color .4s ease; }
         .register-prompt a:hover { color: #4a3f66; text-decoration: underline; }
-
-        .oauth-divider { display: flex; align-items: center; gap: .75rem; margin: 1.15rem 0 .8rem; color: #a58599; font-size: .72rem; font-weight: 700; }
-        .oauth-divider::before, .oauth-divider::after { content: ''; flex: 1; height: 1px; background: #f3c9dc; }
-        .oauth-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: .55rem; }
-        .oauth-button { display: flex; align-items: center; justify-content: center; gap: .35rem; min-height: 43px; padding: .55rem .35rem; color: #59445d; background: #fff; border: 1.5px solid #efb8d0; border-radius: 13px; box-shadow: 0 4px 10px rgba(185,87,140,.1); font-size: .72rem; font-weight: 700; text-decoration: none; transition: transform .2s ease, border-color .2s ease, background .2s ease; }
-        .oauth-button:hover { color: #b9578c; background: #fff5fa; border-color: #d56d9f; transform: translateY(-2px); }
-        .oauth-logo { width: 23px; height: 23px; display: block; object-fit: contain; border-radius: 6px; }
 
         @media (max-width: 768px) {
             .container { flex-direction: column; height: auto; }
@@ -378,15 +367,8 @@ if(isset($_POST['login'])){
                             </button>
                         </div>
                     </div>
-                    <div class="login-options"><a href="#" class="forgot-pass">Forgot password?</a></div>
                     <button type="submit" name="login" class="login-btn">log in ✧</button>
                 </form>
-                <div class="oauth-divider"><span>or continue with</span></div>
-                <div class="oauth-options" aria-label="Social login options">
-                    <a class="oauth-button" href="oauth.php?provider=google"><img class="oauth-logo" src="assests/images/google-logo.jpg" alt="">Google</a>
-                    <a class="oauth-button" href="oauth.php?provider=discord"><img class="oauth-logo" src="assests/images/discord-logo.jpg" alt="">Discord</a>
-                    <a class="oauth-button" href="oauth.php?provider=github"><img class="oauth-logo" src="assests/images/github-logo.jpg" alt="">GitHub</a>
-                </div>
                 <p class="register-prompt">Don't have an account? <a href="register.php">Register here</a></p>
             </div>
         </div>

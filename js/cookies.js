@@ -17,7 +17,8 @@
     notice.querySelectorAll('[data-cookie-choice]').forEach(button => {
         button.addEventListener('click', () => {
             const value = button.dataset.cookieChoice;
-            document.cookie = `${consentName}=${encodeURIComponent(value)}; Max-Age=15552000; Path=/; SameSite=Lax`;
+            const secureFlag = location.protocol === 'https:' ? '; Secure' : '';
+            document.cookie = `${consentName}=${encodeURIComponent(value)}; Max-Age=15552000; Path=/; SameSite=Lax${secureFlag}`;
             notice.hidden = true;
         });
     });

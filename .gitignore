@@ -12,3 +12,6 @@ Thumbs.db
 
 # Environment files
 .env
+includes/private.env
+includes/private.config
+includes/private.php
