@@ -220,7 +220,7 @@ if (empty($_SESSION['chat_csrf'])) {
     };
     const loadChat = async () => {
         try {
-            const response = await fetch('messages.php', { headers: { Accept: 'application/json' }, cache: 'no-store' });
+            const response = await fetch('journal_feed.php', { headers: { Accept: 'application/json' }, cache: 'no-store' });
             if (!response.ok) throw new Error('Chat unavailable');
             const data = await response.json();
             renderMessages(data.messages || []);
@@ -232,7 +232,7 @@ if (empty($_SESSION['chat_csrf'])) {
         button.disabled = true;
         chatStatus.textContent = '';
         try {
-            const response = await fetch('messages.php', { method: 'POST', body: new FormData(chatForm), headers: { Accept: 'application/json' } });
+            const response = await fetch('journal_feed.php', { method: 'POST', body: new FormData(chatForm), headers: { Accept: 'application/json' } });
             const data = await response.json();
             if (!response.ok) throw new Error(data.error || 'Message could not be sent.');
             chatForm.reset();
