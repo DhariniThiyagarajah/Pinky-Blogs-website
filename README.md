@@ -1,4 +1,4 @@
-# Anime Journal
+# Pinky Blog page
 
 A cozy blogging platform for anime lovers to write about reviews, characters, theories, and personal experiences. Built with PHP, MySQL, HTML, CSS, and vanilla JavaScript for a university assignment.
 
